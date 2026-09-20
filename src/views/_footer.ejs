@@ -1,0 +1,173 @@
+<%
+    let footerStyle;
+    if(sitestyles.footerstyle == 1) {
+        footerStyle = "footerimage bg-theme";
+    } else if(sitestyles.footerstyle == 2) {
+        footerStyle = "footerimage bg-thatdark";
+    } else if(sitestyles.footerstyle == 3) {
+        footerStyle = "footerimage noboxshadow noborders";
+    };
+%>
+<br>
+<br>
+<!-- RANDOM ADVERTISEMENT START -->
+<% if(randomad != 'none') { %>
+    <div class="container">
+        <a href="<%= randomad.link %>" target="_blank">
+            <img src="/images/advertisement_<%= randomad.uniqueid %>.<%= randomad.filetype %>" class="footeradvertisement bd-theme" alt="random advertisement image" loading="lazy">
+        </a>
+    </div>
+    <br>
+<% }; %>
+<!-- RANDOM ADVERTISEMENT END -->
+<!-- FOOTER START -->
+<div class="<%= footerStyle %>">
+    <% if(sitestyles.footerchoice == 1) { %>
+        <div class="container-fluid">
+            <div class="row justify-content-center text-start">
+                <div class="col-lg-6 footercolumnscentermobile">
+                    <img src="/assets/logo.png" class="footerlogoone" loading="lazy" alt="website logo">
+                    <p class="footerdescone mb-3"><%= sitesettings.sitedesc %></p>
+                    <p style="font-weight: 700;">Copyright &copy; <%= currentyear %> <%= sitesettings.sitename %></p>
+                    <div class="mt-4">
+                        <% if(sitesettings.email != 'none') { %>
+                            <a class="socialicon" href="mailto:<%= sitesettings.email %>" target="_blank"><i class="fa-solid fa-envelope"></i></a>
+                        <% }; %>
+                        <% if(sitesettings.twitter != 'none') { %>
+                            <a class="socialicon" href="https://twitter.com/<%= sitesettings.twitter %>" target="_blank"><i class="fa-brands fa-twitter"></i></a>
+                        <% }; %>
+                        <% if(sitesettings.discord != 'none') { %>
+                            <a class="socialicon" href="<%= sitesettings.discord %>" target="_blank"><i class="fa-brands fa-discord"></i></a>
+                        <% }; %>
+                        <% if(sitesettings.youtube != 'none') { %>
+                            <a class="socialicon" href="<%= sitesettings.youtube %>" target="_blank"><i class="fa-brands fa-youtube"></i></a>
+                        <% }; %>
+                        <% if(sitesettings.instagram != 'none') { %>
+                            <a class="socialicon" href="https://instagram.com/<%= sitesettings.instagram %>" target="_blank"><i class="fa-brands fa-instagram"></i></a>
+                        <% }; %>
+                        <% if(sitesettings.facebook != 'none') { %>
+                            <a class="socialicon" href="<%= sitesettings.facebook %>" target="_blank"><i class="fa-brands fa-facebook"></i></a>
+                        <% }; %>
+                        <% if(sitesettings.tiktok != 'none') { %>
+                            <a class="socialicon" href="https://tiktok.com/@<%= sitesettings.tiktok %>" target="_blank"><i class="fa-brands fa-tiktok"></i></a>
+                        <% }; %>
+                    </div>
+                </div>
+                <div class="col-lg-3 footercolumnscentermobile">
+                    <p class="footerheaderone">Navigation</p>
+                    <p class="footeritemone"><a href="/">Home</a></p>
+                    <p class="footeritemone"><a href="/shop">Shopping</a></p>
+                    <p class="footeritemone"><a href="/reviews">Reviews</a></p>
+                    <p class="footeritemone"><a href="/account">Account</a></p>
+                    <p class="footeritemone"><a href="/giftcards">Gift Cards</a></p>
+                </div>
+                <div class="col-lg-3 footercolumnscentermobile">
+                    <p class="footerheaderone">Information</p>
+                    <p class="footeritemone"><a href="/tos">Terms of Service</a></p>
+                    <p class="footeritemone"><a href="/privacy">Privacy Policy</a></p>
+                    <p class="footeritemone"><a href="/cookies">Cookie Policy</a></p>
+                    <p class="footeritemone"><a href="/discord">Our Discord</a></p>
+                    <p class="footeritemone"><a href="/faq">FAQs</a></p>
+                </div>
+            </div>
+            <br>
+            <hr>
+            <div class="row justify-content-center">
+                <div class="col-2 text-start">
+                    <p class="iconadminfooterone"><a href="/admin"><i class="fa-solid fa-shield-halved"></i></a></p>
+                </div>
+                <div class="col-10 text-end">
+                    <p>Developed with ❤️ by <a href="https://github.com/itz-hyperz" class="text-theme" target="_blank">ThatGuyHyperz</a></p>
+                </div>
+            </div>
+            <br>
+        </div>
+    <% } else if(sitestyles.footerchoice == 2) { %>
+        <div class="container-fluid">
+            <div class="row justify-content-center">
+                <div class="col-4 text-start">
+                    <p class="footerheader">Information</p>
+                    <p class="footeritem"><a href="/tos">Terms of Service</a></p>
+                    <p class="footeritem"><a href="/privacy">Privacy Policy</a></p>
+                    <p class="footeritem"><a href="/cookies">Cookie Policy</a></p>
+                </div>
+                <div class="col-4 text-center">
+                    <p class="footerheader">Site Links</p>
+                    <p class="footeritem"><a href="/">Home</a></p>
+                    <p class="footeritem"><a href="/shop">Shop</a></p>
+                    <p class="footeritem"><a href="/reviews">Reviews</a></p>
+                </div>
+                <div class="col-4 text-end">
+                    <p class="footerheader">Support</p>
+                    <p class="footeritem"><a href="/account">Account</a></p>
+                    <p class="footeritem"><a href="/discord">Discord</a></p>
+                    <p class="footeritem"><a href="/faq">FAQs</a></p>
+                </div>
+            </div>
+            <div class="footerhr">
+                <hr>
+            </div>
+            <div class="row">
+                <div class="col-1 text-start">
+                    <p><a href="/admin"><i class="fa-solid fa-shield-halved"></i></a> <a href="https://github.com/itz-hyperz" target="_blank"><i class="fa-solid fa-code"></i></a></p>
+                </div>
+                <div class="col-11 text-end">
+                    <p>Copyright &copy; <%= currentyear %> <%= sitesettings.sitename %></p>
+                </div>
+            </div>
+            <div class="mt-2 mb-3 text-center">
+                <% if(sitesettings.email != 'none') { %>
+                    <a class="socialicon" href="mailto:<%= sitesettings.email %>" target="_blank"><i class="fa-solid fa-envelope"></i></a>
+                <% }; %>
+                <% if(sitesettings.twitter != 'none') { %>
+                    <a class="socialicon" href="https://twitter.com/<%= sitesettings.twitter %>" target="_blank"><i class="fa-brands fa-twitter"></i></a>
+                <% }; %>
+                <% if(sitesettings.discord != 'none') { %>
+                    <a class="socialicon" href="<%= sitesettings.discord %>" target="_blank"><i class="fa-brands fa-discord"></i></a>
+                <% }; %>
+                <% if(sitesettings.youtube != 'none') { %>
+                    <a class="socialicon" href="<%= sitesettings.youtube %>" target="_blank"><i class="fa-brands fa-youtube"></i></a>
+                <% }; %>
+                <% if(sitesettings.instagram != 'none') { %>
+                    <a class="socialicon" href="https://instagram.com/<%= sitesettings.instagram %>" target="_blank"><i class="fa-brands fa-instagram"></i></a>
+                <% }; %>
+                <% if(sitesettings.facebook != 'none') { %>
+                    <a class="socialicon" href="<%= sitesettings.facebook %>" target="_blank"><i class="fa-brands fa-facebook"></i></a>
+                <% }; %>
+                <% if(sitesettings.tiktok != 'none') { %>
+                    <a class="socialicon" href="https://tiktok.com/@<%= sitesettings.tiktok %>" target="_blank"><i class="fa-brands fa-tiktok"></i></a>
+                <% }; %>
+            </div>
+        </div>
+    <% }; %>
+</div>
+<!-- FOOTER END -->
+<!-- COOKIE NOTICE START -->
+<div class="cookiething">
+    <div class="row justify-content-center text-start">
+        <div class="col-lg-8 footercolumnscentermobile">
+            <h3>Cookie Notice</h3>
+            <p>This site uses cookies to store and access device information, account information, and agreements. Withdrawing consent to store this information may result in a loss of certain features and functions. You can read our cookie policy <a href="/cookies" class="text-theme">here</a>.</p>
+        </div>
+        <div class="col-lg-2 footercolumnscentermobile">
+            <button type="button" class="btn btn-lg btn-theme" style="margin-top: 1.5em;" id="liveToastBtn">Accept Cookies</button>
+        </div>
+    </div>
+</div>
+<script>
+    const cookieBox = document.querySelector('.cookiething'),
+    acceptBtn = cookieBox.querySelector('button');
+    acceptBtn.onclick = () => {
+        document.cookie = "CookieAccepted=OneMonth; max-age="+60*60*24*30;
+        if(document.cookie) {
+            cookieBox.classList.remove("cookieshow");
+        };
+    };
+    let checkCookie = document.cookie.indexOf("CookieAccepted=OneMonth");
+    if(checkCookie == 0) {
+        cookieBox.classList.remove("cookieshow")
+    } else {
+        cookieBox.classList.add("cookieshow")
+    };
+</script>
+<!-- COOKIE NOTICE END -->
