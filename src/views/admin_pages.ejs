@@ -1,0 +1,380 @@
+<%
+  data.products = data.products.sort((a, b) => {
+    return a.pos - b.pos;
+  });
+%>
+
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Admin - <%= sitesettings.sitename %></title>
+        <meta property="og:title" content="Admin - <%= sitesettings.sitename %>" />
+        <link rel="icon" href="/assets/logo.png">
+        <meta property="og:image" content="/assets/logo.png">
+        <meta name="theme-color" content="<%= sitesettings.sitecolor %>">
+        <meta name="description" content="<%= sitesettings.sitedesc %>" />
+        <meta property="og:type" content="website" />
+        <meta property="og:description" content="<%= sitesettings.sitedesc %>" />
+    </head>
+    <body>
+        <%- include('_header') %>
+        <%- include('_admin_header') %>
+        <div class="container">
+            <h1><code>Page Manager</code></h1>
+            <br>
+            <button type="button" class="btn btn-lg btn-theme" data-bs-toggle="modal" data-bs-target="#teamCreate"><i class="fa-solid fa-user-plus"></i> Team Page</button>
+            <button type="button" class="btn btn-lg btn-theme" data-bs-toggle="modal" data-bs-target="#partnerCreate"><i class="fa-solid fa-handshake-simple"></i> Partners Page</button>
+            <button type="button" class="btn btn-lg btn-theme" data-bs-toggle="modal" data-bs-target="#documentation"><i class="fa-brands fa-readme"></i> Documentation</button>
+            <br>
+            <button type="button" class="btn btn-lg btn-theme mt-3" data-bs-toggle="modal" data-bs-target="#customPageCreate"><i class="fa-solid fa-newspaper"></i> Create Custom Page</button>
+            <br>
+            <br>
+            <h4>Custom Pages</h4>
+            <div class="customDiv">
+              <table class="table table-bordered border-white text-white">
+                <thead>
+                  <tr>
+                    <th scope="col">Title</th>
+                    <th scope="col">Link</th>
+                    <th scope="col" class="text-end">Options</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <% data.custompages.forEach(function(page) { %>
+                    <tr>
+                        <td><%= page.title %></td>
+                        <td><a href="/page/<%= page.link %>"><%= page.link %></a></td>
+                        <td class="text-end"><a class="text-danger" href="/backend/delete/custompage/<%= page.uniqueid %>">Delete</a></td>
+                    </tr>
+                  <% }); %>
+                </tbody>
+              </table>
+            </div>
+        </div>
+        <!-- Custom Pages Modal START -->
+        <div class="modal fade" id="customPageCreate" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div class="modal-dialog modal-xl">
+            <div class="modal-content text-bg-dark">
+              <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel"><i class="fa-solid fa-newspaper"></i> Create Custom Page</h1>
+                <button type="button" class="btnnostyle closebutton" data-bs-dismiss="modal" aria-label="Close">&times;</button>
+              </div>
+              <form action="/backend/create/custompage" method="post">
+              <div class="modal-body p-4">
+                <div class="row justify-content-center">
+                  <div class="col-lg-6 mb-3">
+                    <div class="text-start">
+                      <p><i class="fa-solid fa-thumbtack"></i> Page Title</p>
+                      <input type="text" class="form-control darkinputcolor" name="pagetitle" placeholder="Page Title..." required>
+                    </div>
+                  </div>
+                  <div class="col-lg-6 mb-3">
+                    <div class="text-start">
+                      <p><i class="fa-solid fa-link"></i> Page Link</p>
+                      <input type="text" class="form-control darkinputcolor" name="pagelink" placeholder="Page Short URL..." required>
+                    </div>
+                  </div>
+                  <div class="col-12 mb-3">
+                    <div class="text-start">
+                      <p><i class="fa-solid fa-folder-open"></i> Page Content (supports markdown)</p>
+                      <textarea class="form-control darkinputcolor" name="pagecontent" placeholder="This is just an amazing product!" rows="7" required></textarea>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="submit" class="btn btn-theme"><i class="fa-solid fa-newspaper"></i> Create Page</button>
+              </div>
+            </form>
+            </div>
+          </div>
+        </div>
+        <!-- Custom Pages Modal END -->
+        <!-- Team Page Modal START -->
+        <div class="modal fade" id="teamCreate" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div class="modal-dialog modal-xl">
+            <div class="modal-content text-bg-dark">
+              <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel"><i class="fa-solid fa-user-plus"></i> Team Members</h1>
+                <button type="button" class="btnnostyle closebutton" data-bs-dismiss="modal" aria-label="Close">&times;</button>
+              </div>
+              <form action="/backend/create/team" method="post" enctype="multipart/form-data">
+                <div class="modal-body p-4">
+                  <h3>Create A Team</h3>
+                  <hr>
+                  <div class="row justify-content-center">
+                    <div class="col-lg-6 mb-3">
+                      <div class="text-start">
+                        <p><i class="fa-solid fa-signature"></i> Member Name</p>
+                        <input type="text" class="form-control darkinputcolor" name="name" placeholder="Hyperz#0001" required>
+                      </div>
+                    </div>
+                    <div class="col-lg-6 mb-3">
+                      <div class="text-start">
+                        <p><i class="fa-solid fa-hashtag"></i> Position</p>
+                        <input type="number" class="form-control darkinputcolor" name="position" placeholder="# Position" required>
+                      </div>
+                    </div>
+                    <div class="col-lg-6 mb-3">
+                      <div class="text-start">
+                        <p><i class="fa-solid fa-link"></i> Title</p>
+                        <input type="text" class="form-control darkinputcolor" name="title" placeholder="Management" required>
+                      </div>
+                    </div>
+                    <div class="col-lg-6 mb-3">
+                      <div class="text-start">
+                        <p><i class="fa-solid fa-image"></i> Picture</p>
+                        <input type="file" class="form-control darkinputcolor" accept=".png" name="imagelogo" required>
+                      </div>
+                    </div>
+                    <div class="col-12 mb-3">
+                      <div class="text-start">
+                        <p><i class="fa-solid fa-comment"></i> Description</p>
+                        <textarea class="form-control darkinputcolor" name="content" placeholder="I like to write code sometimes and help manage the server!" rows="3" required></textarea>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="text-end mb-3">
+                    <button type="submit" class="btn btn-theme"><i class="fa-solid fa-user-plus"></i> Create Member</button>
+                  </div>
+                </div>
+              </form>
+              <div class="modal-footer"></div>
+              <div class="modal-body p-4">
+                <h3>Current Team Members</h3>
+                <hr>
+                <div class="customDiv">
+                  <table class="table table-bordered border-white text-white">
+                    <thead>
+                      <tr>
+                        <th scope="col">Name</th>
+                        <th scope="col">Title</th>
+                        <th scope="col" class="text-end">Options</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <% data.team.forEach(function(member) { %>
+                        <tr>
+                            <td><%= member.name %></td>
+                            <td><%= member.title %></td>
+                            <td class="text-end"><a class="text-danger" href="/backend/delete/team/<%= member.uniqueid %>">Delete</a></td>
+                        </tr>
+                      <% }); %>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Team Page Modal END -->
+        <!-- Documentation Modal START -->
+        <div class="modal fade" id="documentation" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div class="modal-dialog modal-xl">
+            <div class="modal-content text-bg-dark">
+              <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel"><i class="fa-brands fa-readme"></i> Documentation Manager</h1>
+                <button type="button" class="btnnostyle closebutton" data-bs-dismiss="modal" aria-label="Close">&times;</button>
+              </div>
+              <div class="modal-body p-4">
+                <div class="row justify-content-center">
+                  <div class="col-lg-6 mb-3 text-center">
+                    <div class="p-3">
+                      <h3><i class="fa-solid fa-server"></i> Categories</h3>
+                      <hr>
+                      <form action="/backend/create/docscat" method="post" enctype="multipart/form-data">
+                        <div class="row justify-content-center">
+                          <div class="col-lg-12 mb-3">
+                            <input type="text" name="catname" class="form-control searchbox w-100" placeholder="Category name..." required>
+                          </div>
+                          <div class="col-lg-12 mb-3">
+                            <input type="text" name="catlink" class="form-control searchbox w-100" placeholder="Category link..." required>
+                          </div>
+                          <div class="col-lg-12 mb-3">
+                            <input type="number" name="catpos" class="form-control searchbox w-100" placeholder="Category position..." value="<%= data.docscategories.length + 1 %>" required>
+                          </div>
+                          <div class="col-lg-12 mb-3">
+                            <input type="file" name="catfile" class="form-control searchbox w-100" accept="image/png" required>
+                          </div>
+                          <div class="col-lg-12 mb-3">
+                            <textarea type="text" name="catdesc" class="form-control searchbox w-100" rows="7" placeholder="Category description..." required></textarea>
+                          </div>
+                          <div class="col-lg-12 mb-3">
+                            <button type="submit" class="btn btn-theme w-100"><i class="fa-solid fa-server"></i> Create Category</button>
+                          </div>
+                        </div>
+                      </form>
+                    </div>
+                  </div>
+                  <div class="col-lg-6 mb-3 text-center">
+                    <div class="p-3">
+                      <h3><i class="fa-solid fa-newspaper"></i> Articles</h3>
+                      <hr>
+                      <form action="/backend/create/docsarticle" method="post">
+                        <div class="row justify-content-center">
+                          <div class="col-lg-12 mb-3">
+                            <select name="category" class="form-select searchbox" required>
+                              <% data.docscategories.forEach(function(item) { %>
+                                <option value="<%= item.uniqueid %>"><%= item.name %></option>
+                              <% }); %>
+                            </select>
+                          </div>
+                          <div class="col-lg-12 mb-3">
+                            <input type="text" name="title" class="form-control searchbox w-100" placeholder="Article title..." required>
+                          </div>
+                          <div class="col-lg-12 mb-3">
+                            <input type="text" name="link" class="form-control searchbox w-100" placeholder="Article link..." required>
+                          </div>
+                          <div class="col-lg-12 mb-3">
+                            <input type="number" name="pos" class="form-control searchbox w-100" placeholder="Article position..." value="<%= data.docsarticles.length + 1 %>" required>
+                          </div>
+                          <div class="col-lg-12 mb-3">
+                            <input type="text" name="discordroleid" class="form-control searchbox w-100" placeholder="Discord role ID...">
+                          </div>
+                          <div class="col-lg-12 mb-3">
+                            <textarea type="text" name="content" class="form-control searchbox w-100" rows="5" placeholder="Article description..." required></textarea>
+                          </div>
+                          <div class="col-lg-12 mb-3">
+                            <button type="submit" class="btn btn-theme w-100"><i class="fa-solid fa-newspaper"></i> Create Article</button>
+                          </div>
+                        </div>
+                      </form>
+                    </div>
+                  </div>
+                </div>
+                <hr>
+                <h3 class="mb-3"><i class="fa-solid fa-server"></i> All Categories</h3>
+                <div class="customDiv">
+                  <table class="table table-bordered border-white text-white">
+                    <thead>
+                      <tr>
+                        <th scope="col">Name</th>
+                        <th scope="col">Link</th>
+                        <th scope="col">Unique Id</th>
+                        <th scope="col" class="text-end">Options</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <% data.docscategories.sort((a, b) => { return a.pos - b.pos }).forEach(function(cat) { %>
+                        <tr>
+                            <td><%= cat.name %></td>
+                            <td><%= cat.link %></td>
+                            <td><%= cat.uniqueid %></td>
+                            <td class="text-end"><a class="text-theme" href="/admin/editdocscat/<%= cat.uniqueid %>">Edit</a> | <a class="text-danger" href="/backend/delete/docscat/<%= cat.uniqueid %>">Delete</a></td>
+                        </tr>
+                      <% }); %>
+                    </tbody>
+                  </table>
+                </div>
+                <hr>
+                <h3 class="mb-3"><i class="fa-solid fa-newspaper"></i> All Articles</h3>
+                <div class="customDiv">
+                  <table class="table table-bordered border-white text-white">
+                    <thead>
+                      <tr>
+                        <th scope="col">Name</th>
+                        <th scope="col">Link</th>
+                        <th scope="col">Unique Id</th>
+                        <th scope="col" class="text-end">Options</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <% data.docsarticles.sort((a, b) => { return a.pos - b.pos }).forEach(function(article) { %>
+                        <tr>
+                            <td><%= article.title %></td>
+                            <td><%= article.link %></td>
+                            <td><%= article.uniqueid %></td>
+                            <td class="text-end"><a class="text-theme" href="/admin/editdocsarticle/<%= article.uniqueid %>">Edit</a> | <a class="text-danger" href="/backend/delete/docsarticle/<%= article.uniqueid %>">Delete</a></td>
+                        </tr>
+                      <% }); %>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Documentation Modal END -->
+        <!-- Partners Page Modal START -->
+        <div class="modal fade" id="partnerCreate" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div class="modal-dialog modal-xl">
+            <div class="modal-content text-bg-dark">
+              <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel"><i class="fa-solid fa-handshake-simple"></i> Partners Page</h1>
+                <button type="button" class="btnnostyle closebutton" data-bs-dismiss="modal" aria-label="Close">&times;</button>
+              </div>
+              <form action="/backend/create/partners" method="post" enctype="multipart/form-data">
+                <div class="modal-body p-4">
+                  <h3>Create A Partner</h3>
+                  <hr>
+                  <div class="row justify-content-center">
+                    <div class="col-lg-6 mb-3">
+                      <div class="text-start">
+                        <p><i class="fa-solid fa-signature"></i> Partner Name</p>
+                        <input type="text" class="form-control darkinputcolor" name="title" placeholder="Hyperz Development" required>
+                      </div>
+                    </div>
+                    <div class="col-lg-6 mb-3">
+                      <div class="text-start">
+                        <p><i class="fa-solid fa-hashtag"></i> Partner Position</p>
+                        <input type="number" class="form-control darkinputcolor" name="position" placeholder="# Position" required>
+                      </div>
+                    </div>
+                    <div class="col-lg-6 mb-3">
+                      <div class="text-start">
+                        <p><i class="fa-solid fa-link"></i> Partner Link</p>
+                        <input type="text" class="form-control darkinputcolor" name="link" placeholder="https://example.com/" required>
+                      </div>
+                    </div>
+                    <div class="col-lg-6 mb-3">
+                      <div class="text-start">
+                        <p><i class="fa-solid fa-image"></i> Picture</p>
+                        <input type="file" class="form-control darkinputcolor" accept=".png" name="imagelogo" required>
+                      </div>
+                    </div>
+                    <div class="col-12 mb-3">
+                      <div class="text-start">
+                        <p><i class="fa-solid fa-comment"></i> Content</p>
+                        <textarea class="form-control darkinputcolor" name="content" placeholder="We have the best software in the east!" rows="4" required></textarea>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="text-end mb-3">
+                    <button type="submit" class="btn btn-theme"><i class="fa-solid fa-handshake-simple"></i> Create Partner</button>
+                  </div>
+                </div>
+              </form>
+              <div class="modal-footer"></div>
+              <div class="modal-body p-4">
+                <h3>Current Partners</h3>
+                <hr>
+                <div class="customDiv">
+                  <table class="table table-bordered border-white text-white">
+                    <thead>
+                      <tr>
+                        <th scope="col">Partner</th>
+                        <th scope="col">Link</th>
+                        <th scope="col" class="text-end">Options</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <% data.partners.forEach(function(partner) { %>
+                        <tr>
+                            <td><%= partner.title %></td>
+                            <td><%= partner.link %></td>
+                            <td class="text-end"><a class="text-danger" href="/backend/delete/partners/<%= partner.uniqueid %>">Delete</a></td>
+                        </tr>
+                      <% }); %>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Partners Page Modal END -->
+        <%- include('_footer') %>
+    </body>
+</html>

@@ -1,0 +1,527 @@
+<%
+  data.products = data.products.sort((a, b) => {
+    return a.pos - b.pos;
+  });
+  function convertInvoicePaid(value) {
+    if(value) {
+      return 'PAID';
+    } else {
+        return 'UNPAID';
+    };
+  };
+%>
+
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Admin - <%= sitesettings.sitename %></title>
+        <meta property="og:title" content="Admin - <%= sitesettings.sitename %>" />
+        <link rel="icon" href="/assets/logo.png">
+        <meta property="og:image" content="/assets/logo.png">
+        <meta name="theme-color" content="<%= sitesettings.sitecolor %>">
+        <meta name="description" content="<%= sitesettings.sitedesc %>" />
+        <meta property="og:type" content="website" />
+        <meta property="og:description" content="<%= sitesettings.sitedesc %>" />
+    </head>
+    <body>
+        <%- include('_header') %>
+        <%- include('_admin_header') %>
+        <div class="container">
+            <h1><code>Product Manager</code></h1>
+            <br>
+            <!-- MODAL & PRODUCT CREATE START -->
+            <button type="button" class="btn btn-lg btn-theme mb-3" data-bs-toggle="modal" data-bs-target="#productCreate"><i class="fa-solid fa-circle-plus"></i> Create A Product</button>
+            <button type="button" class="btn btn-lg btn-theme mb-3" data-bs-toggle="modal" data-bs-target="#categoryManager"><i class="fa-solid fa-server"></i> Store Categories</button>
+            <button type="button" class="btn btn-lg btn-theme mb-3" data-bs-toggle="modal" data-bs-target="#invoiceCreate"><i class="fa-solid fa-file-invoice-dollar"></i> Create An Invoice</button>
+            <button type="button" class="btn btn-lg btn-theme mb-3" data-bs-toggle="modal" data-bs-target="#storeTags"><i class="fa-solid fa-tag"></i> Store Tags</button>
+            <div class="modal fade" id="productCreate" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+              <div class="modal-dialog modal-xl">
+                <div class="modal-content text-bg-dark">
+                  <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel"><i class="fa-solid fa-cart-shopping"></i> Create A Product</h1>
+                    <button type="button" class="btnnostyle closebutton" data-bs-dismiss="modal" aria-label="Close">&times;</button>
+                  </div>
+                  <form action="/backend/create/product" method="post" enctype="multipart/form-data">
+                    <div class="modal-body p-4">
+                      <div class="row justify-content-center">
+                        <div class="col-lg-6 mb-3">
+                          <div class="text-start">
+                            <p><i class="fa-solid fa-paper-plane"></i> Product Name</p>
+                            <input type="text" class="form-control darkinputcolor" name="productname" placeholder="Product name..." required>
+                          </div>
+                        </div>
+                        <div class="col-lg-6 mb-3">
+                          <div class="text-start">
+                            <p><i class="fa-solid fa-link"></i> Product Link URL (/shop/<b>myproduct</b>)</p>
+                            <input type="text" class="form-control darkinputcolor" name="productlink" placeholder="Product link... (myproduct)" required>
+                          </div>
+                        </div>
+                        <div class="col-lg-6 mb-3">
+                          <div class="text-start">
+                            <p><i class="fa-solid fa-sack-dollar"></i> Product Price</p>
+                            <input type="text" class="form-control darkinputcolor" name="productprice" placeholder="Product price... (19.99)" required>
+                          </div>
+                        </div>
+                        <div class="col-lg-6 mb-3">
+                          <div class="text-start">
+                            <p><i class="fa-solid fa-location-dot"></i> Product Positioning</p>
+                            <input type="number" class="form-control darkinputcolor" name="productpos" placeholder="Product position... (14)" value="1" required>
+                          </div>
+                        </div>
+                        <div class="col-lg-6 mb-3">
+                          <div class="text-start">
+                            <p><i class="fa-solid fa-clipboard"></i> Product Description</p>
+                            <textarea class="form-control darkinputcolor" name="productdescription" placeholder="This is just an amazing product!" rows="7" required></textarea>
+                          </div>
+                        </div>
+                        <div class="col-lg-6 mb-3">
+                          <div class="text-start">
+                            <p><i class="fa-solid fa-scroll"></i> Product Credits</p>
+                            <textarea class="form-control darkinputcolor" name="productcredits" placeholder="Hyperz#0001 - Creating the website!" rows="7" required></textarea>
+                          </div>
+                        </div>
+                        <div class="col-lg-6 mb-3">
+                          <div class="text-start">
+                            <p><i class="fa-solid fa-images"></i> Product Gallery (links separated by commas)</p>
+                            <textarea class="form-control darkinputcolor" name="productgallery" placeholder="http://example.com/image1.png, http://example.com/image2.png" rows="5" required></textarea>
+                          </div>
+                        </div>
+                        <div class="col-lg-6 mb-3">
+                          <div class="text-start">
+                            <p class="mb-2"><i class="fa-solid fa-file-zipper"></i> File Upload</p>
+                            <small>Featured Image (.PNG)</small>
+                            <input class="form-control darkinputcolor mb-2" type="file" accept="image/png" name="mainimage" id="formFile" required>
+                            <small>Product Download (.ZIP)</small>
+                            <input class="form-control darkinputcolor" type="file" name="productfile" id="formFile" required>
+                          </div>
+                        </div>
+                        <div class="col-lg-6 mb-3">
+                          <div class="text-start">
+                            <p class="mb-2"><i class="fa-brands fa-discord"></i> Discord Customer Role</p>
+                            <input type="text" class="form-control darkinputcolor" name="productgivenrole" placeholder="Ex. 944065222245748809">
+                          </div>
+                        </div>
+                        <div class="col-lg-6 mb-3">
+                          <div class="text-start">
+                            <p class="mb-2"><i class="fa-solid fa-link"></i> Demo Link</p>
+                            <input type="text" class="form-control darkinputcolor" name="demolink" placeholder="https://example.com">
+                          </div>
+                        </div>
+                        <div class="col-lg-12 mb-3">
+                          <div class="text-start">
+                            <p class="mb-2"><i class="fa-solid fa-link"></i> Linked Items (<code>Unique Ids</code>) (comma separated)</p>
+                            <input type="text" class="form-control darkinputcolor" name="linkeditems" placeholder="123456abcdef, 789123ghijkl, 456789mnopqr">
+                          </div>
+                        </div>
+                        <div class="col-lg-12 mb-3">
+                          <div class="text-start">
+                            <h4 class="mb-3"><i class="fa-solid fa-tag"></i> Store Tags</h4>
+                            <div class="row justify-content-center">
+                              <% data.storetags.forEach(function(item) { %>
+                                <div class="col-lg-3 mb-3">
+                                  <div class="bg-thatdark p-2" style="display: flex; border-radius: 0.4em;">
+                                    <input type="checkbox" name="checkbox[<%= item.uniqueid %>]">
+                                    <p class="ms-2"><%= item.name %></p>
+                                  </div>
+                                </div>
+                              <% }); %>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                      <button type="submit" class="btn btn-theme"><i class="fa-solid fa-plus"></i> Create Product</button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+            <div class="modal fade" id="categoryManager" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+              <div class="modal-dialog modal-xl">
+                <div class="modal-content text-bg-dark">
+                  <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel"><i class="fa-solid fa-server"></i> Category Manager</h1>
+                    <button type="button" class="btnnostyle closebutton" data-bs-dismiss="modal" aria-label="Close">&times;</button>
+                  </div>
+                  <form action="/backend/create/storecat" method="post" enctype="multipart/form-data">
+                    <div class="modal-body p-4">
+                      <div class="row justify-content-center">
+                        <div class="col-lg-6 mb-3">
+                          <div class="text-start">
+                            <p><i class="fa-solid fa-paper-plane"></i> Category Name</p>
+                            <input type="text" class="form-control darkinputcolor" name="catname" placeholder="Category name..." required>
+                          </div>
+                        </div>
+                        <div class="col-lg-6 mb-3">
+                          <div class="text-start">
+                            <p><i class="fa-solid fa-link"></i> Link URL (/shop/<b>mycategory</b>)</p>
+                            <input type="text" class="form-control darkinputcolor" name="catlink" placeholder="Category link... (mycategory)" required>
+                          </div>
+                        </div>
+                        <div class="col-lg-6 mb-3">
+                          <div class="text-start">
+                            <p><i class="fa-solid fa-clipboard"></i> Category Description</p>
+                            <textarea class="form-control darkinputcolor" name="catdescription" placeholder="This is just an amazing category!" rows="9" required></textarea>
+                          </div>
+                        </div>
+                        <div class="col-lg-6 mb-3">
+                          <div class="text-start">
+                            <p><i class="fa-solid fa-location-dot"></i> Category Positioning</p>
+                            <input type="number" class="form-control darkinputcolor mb-4" name="catpos" placeholder="Category position... (14)" value="<%= data.storecategories.length + 1 %>" required>
+                            <p class="mb-2"><i class="fa-solid fa-file-zipper"></i> Featured Image (.PNG)</p>
+                            <input class="form-control darkinputcolor mb-4" type="file" accept="image/png" name="mainimage" id="formFile" required>
+                            <p class="mb-2"><i class="fa-solid fa-link"></i> Linked Items (<code>Unique Ids</code>) (comma separated)</p>
+                            <input type="text" class="form-control darkinputcolor" name="linkeditems" placeholder="123456abcdef, 789123ghijkl, 456789mnopqr" required>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="text-end">
+                        <button type="submit" class="btn btn-theme"><i class="fa-solid fa-server"></i> Create Store Category</button>
+                      </div>
+                      <br>
+                      <hr>
+                      <br>
+                      <div class="text-center">
+                        <h3>All Categories</h3>
+                        <p>Manage and edit current store categories.</p>
+                        <br>
+                        <div class="customDiv">
+                          <table class="table table-bordered border-white text-white" id="catsTable">
+                            <thead>
+                              <tr>
+                                <th scope="col">Name</th>
+                                <th scope="col">Link</th>
+                                <th scope="col">Unique Id</th>
+                                <th scope="col" class="text-end">Options</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <% data.storecategories.sort((a, b) => { return a.pos - b.pos }).forEach(function(product) { %>
+                                <tr>
+                                    <td><%= product.name %></td>
+                                    <td><%= product.link %></td>
+                                    <td><%= product.uniqueid %></td>
+                                    <td class="text-end"><a href="/shop/<%= product.link %>" class="text-theme">View</a> | <a href="/admin/editcategory/<%= product.uniqueid %>" class="text-theme">Edit</a> | <a href="/backend/storecat/togglehide/<%= product.uniqueid %>" class="text-warning">Toggle Hide</a> | <a href="/backend/delete/storecat/<%= product.uniqueid %>" class="text-danger">Delete</a></td>
+                                </tr>
+                              <% }); %>
+                            </tbody>
+                          </table>
+                        </div>
+                        <br>
+                      </div>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+            <div class="modal fade" id="storeTags" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+              <div class="modal-dialog modal-xl">
+                <div class="modal-content text-bg-dark">
+                  <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel"><i class="fa-solid fa-tag"></i> Store Tags Manager</h1>
+                    <button type="button" class="btnnostyle closebutton" data-bs-dismiss="modal" aria-label="Close">&times;</button>
+                  </div>
+                  <form action="/backend/create/storetag" method="post" enctype="multipart/form-data">
+                    <div class="modal-body p-4">
+                      <h3>Create Store Tags</h3>
+                      <div class="row justify-content-center">
+                        <div class="col-lg-6 mb-3">
+                          <div class="text-start">
+                            <input type="text" class="form-control darkinputcolor" name="tagname" placeholder="Tag name..." required>
+                          </div>
+                        </div>
+                        <div class="col-lg-6 mb-3">
+                          <div class="text-start">
+                            <button type="submit" class="btn btn-theme w-100"><i class="fa-solid fa-tag"></i> Create Store Tag</button>
+                          </div>
+                        </div>
+                      </div>
+                      <br>
+                      <hr>
+                      <br>
+                      <div class="text-center">
+                        <h3>All Store Tags</h3>
+                        <p>Manage current store tags.</p>
+                        <br>
+                        <div class="customDiv">
+                          <table class="table table-bordered border-white text-white" id="catsTable">
+                            <thead>
+                              <tr>
+                                <th scope="col">Name</th>
+                                <th scope="col">Unique Id</th>
+                                <th scope="col" class="text-end">Options</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <% data.storetags.sort((a, b) => { return a.pos - b.pos }).forEach(function(tag) { %>
+                                <tr>
+                                    <td><%= tag.name %></td>
+                                    <td><%= tag.uniqueid %></td>
+                                    <td class="text-end"><a href="/backend/delete/storetag/<%= tag.uniqueid %>" class="text-danger">Delete</a></td>
+                                </tr>
+                              <% }); %>
+                            </tbody>
+                          </table>
+                        </div>
+                        <br>
+                      </div>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+            <div class="modal fade" id="invoiceCreate" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+              <div class="modal-dialog modal-xl">
+                <div class="modal-content text-bg-dark">
+                  <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel"><i class="fa-solid fa-file-invoice-dollar"></i> Create An Invoice</h1>
+                    <button type="button" class="btnnostyle closebutton" data-bs-dismiss="modal" aria-label="Close">&times;</button>
+                  </div>
+                  <form action="/backend/create/invoice" method="post">
+                    <div class="modal-body p-4">
+                      <div class="row justify-content-center">
+                        <div class="col-lg-6 mb-3">
+                          <div class="text-start">
+                            <p><i class="fa-solid fa-user"></i> User ID</p>
+                            <input type="text" class="form-control darkinputcolor" name="userid" placeholder="Invoice User Id..." required>
+                          </div>
+                        </div>
+                        <div class="col-lg-6 mb-3">
+                          <div class="text-start">
+                            <p><i class="fa-regular fa-money-bill-1"></i> Price</p>
+                            <input type="text" class="form-control darkinputcolor" name="price" placeholder="19.99" required>
+                          </div>
+                        </div>
+                        <div class="col-lg-12 mb-3">
+                          <div class="text-start">
+                            <p><i class="fa-solid fa-paper-plane"></i> Invoice Title</p>
+                            <input type="text" class="form-control darkinputcolor" name="title" placeholder="Invoice title..." required>
+                          </div>
+                        </div>
+                        <div class="col-lg-12 mb-3">
+                          <div class="text-start">
+                            <p><i class="fa-solid fa-envelope"></i> Invoice Description</p>
+                            <textarea class="form-control darkinputcolor" name="description" placeholder="Invoice description..." rows="7" required></textarea>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                      <button type="submit" class="btn btn-theme"><i class="fa-solid fa-file-invoice-dollar"></i> Create Invoice</button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+            <!-- MODAL & PRODUCT CREATE END -->
+            <hr>
+            <h4><i class="fa-solid fa-cart-shopping"></i> All Products</h4>
+            <input type="text" class="form-control mb-3 darkinputcolor text-center searchbox" id="productAdminSearch" onkeyup="searchBar(0, 'productAdminSearch', 'productsTable')" placeholder="Search a product name...">
+            <div class="customDiv">
+              <table class="table table-bordered border-white text-white" id="productsTable">
+                <thead>
+                  <tr>
+                    <th scope="col">Name</th>
+                    <th scope="col">Link</th>
+                    <th scope="col">Position</th>
+                    <th scope="col">Unique Id</th>
+                    <th scope="col" class="text-end">Options</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <% data.products.forEach(function(product) { %>
+                    <tr>
+                        <td><%= product.name %></td>
+                        <td><%= product.link %></td>
+                        <td><%= product.pos %></td>
+                        <td><%= product.uniqueid %></td>
+                        <td class="text-end"><a href="/backend/findproduct/<%= product.uniqueid %>" class="text-theme">View</a> | <a href="/admin/editproduct/<%= product.uniqueid %>" class="text-theme">Edit</a> | <a href="/backend/delete/product/<%= product.uniqueid %>" class="text-danger">Delete</a></td>
+                    </tr>
+                  <% }); %>
+                </tbody>
+              </table>
+            </div>
+            <hr>
+            <h4><i class="fa-solid fa-file-invoice-dollar"></i> All Invoices</h4>
+            <input type="text" class="form-control mb-3 darkinputcolor text-center searchbox" id="invoiceAdminSearch" onkeyup="searchBar(1, 'invoiceAdminSearch', 'invoicesTable')" placeholder="Search an invoice title...">
+            <div class="customDiv">
+              <table class="table table-bordered border-white text-white" id="invoicesTable">
+                <thead>
+                  <tr>
+                    <th scope="col">User Id</th>
+                    <th scope="col">Title</th>
+                    <th scope="col">Price</th>
+                    <th scope="col">Status</th>
+                    <th scope="col">Date/Time</th>
+                    <th scope="col" class="text-end">Options</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <% data.invoices.reverse().forEach(function(invoice) { %>
+                    <tr>
+                        <td><%= invoice.userid %></td>
+                        <td><%= invoice.title %></td>
+                        <td><%= config.paymentSettings.currencySymbol %><%= invoice.price %></td>
+                        <td><%= convertInvoicePaid(invoice.paid) %></td>
+                        <td><%= invoice.datetime %></td>
+                        <td class="text-end"><a href="/invoice/<%= invoice.uniqueid %>" class="text-theme">View</a> | <a href="/backend/delete/invoice/<%= invoice.uniqueid %>" class="text-danger">Delete</a></td>
+                    </tr>
+                  <% }); %>
+                </tbody>
+              </table>
+            </div>
+            <hr>
+            <h4><i class="fa-solid fa-percent"></i> All Discounts</h4>
+            <form action="/backend/create/discount" method="post">
+              <div class="row justify-content-center">
+                <div class="col-lg-3 mb-3">
+                  <input type="text" class="form-control darkinputcolor searchbox" name="code" placeholder="Discount Code..." required>
+                </div>
+                <div class="col-lg-3 mb-3">
+                  <input type="number" class="form-control darkinputcolor searchbox" name="percent" placeholder="Percent Off (15, 25, 30, 45, 75, etc)" required>
+                </div>
+                <% if(data.sitesettings.guildid != 'none') { %>
+                  <div class="col-lg-3 mb-3">
+                    <input type="text" class="form-control darkinputcolor searchbox" name="roleids" placeholder="Required Role Ids (123, 456, etc)">
+                  </div>
+                <% }; %>
+                <div class="col-lg-3 mb-3">
+                  <button type="submit" class="btn btn-theme" style="width: 100%;"><i class="fa-solid fa-tag"></i> Create Discount</button>
+                </div>
+              </div>
+            </form>
+            <div class="customDiv">
+              <table class="table table-bordered border-white text-white">
+                <thead>
+                  <tr>
+                    <th scope="col">Code</th>
+                    <th scope="col">Percent Off</th>
+                    <th scope="col">Required Roles</th>
+                    <th scope="col">Unique Id</th>
+                    <th scope="col" class="text-end">Options</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <% data.discounts.forEach(function(discount) { %>
+                    <tr>
+                        <td><%= discount.code %></td>
+                        <td><%= discount.percent %></td>
+                        <td><%= discount.roleids %></td>
+                        <td><%= discount.uniqueid %></td>
+                        <td class="text-end"><a href="/backend/delete/discount/<%= discount.uniqueid %>" class="text-danger">Delete</a></td>
+                    </tr>
+                  <% }); %>
+                </tbody>
+              </table>
+            </div>
+            <br>
+            <hr>
+            <h4><i class="fa-solid fa-gift"></i> All Gift Cards</h4>
+            <form action="/backend/create/giftcard" method="post" enctype="multipart/form-data">
+              <div class="row justify-content-center">
+                <div class="col-lg-3 mb-3">
+                  <input type="text" class="form-control darkinputcolor searchbox" name="name" placeholder="Gift Card name..." required>
+                </div>
+                <div class="col-lg-3 mb-3">
+                  <input type="text" class="form-control darkinputcolor searchbox" name="amount" placeholder="Price/Amount... (14.99)" required>
+                </div>
+                <div class="col-lg-3 mb-3">
+                  <input type="number" class="form-control darkinputcolor searchbox" name="pos" placeholder="Display Position..." value="<%= data.giftcards.length + 1 %>" required>
+                </div>
+                <div class="col-lg-3 mb-3">
+                  <input type="file" class="form-control darkinputcolor searchbox" accept="image/png" name="file" required>
+                </div>
+                <div class="col-lg-12 mb-4">
+                  <button type="submit" class="btn btn-theme" style="width: 100%;"><i class="fa-solid fa-gift"></i> Create Gift Card</button>
+                </div>
+              </div>
+            </form>
+            <div class="customDiv">
+              <table class="table table-bordered border-white text-white">
+                <thead>
+                  <tr>
+                    <th scope="col">Name</th>
+                    <th scope="col">Price/Amount</th>
+                    <th scope="col">Unique Id</th>
+                    <th scope="col" class="text-end">Options</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <% data.giftcards.sort((a, b) => { return a.pos - b.pos }).forEach(function(giftcard) { %>
+                    <tr>
+                        <td><%= giftcard.name %></td>
+                        <td><%= config.paymentSettings.currencySymbol %><%= giftcard.amount %></td>
+                        <td><%= giftcard.uniqueid %></td>
+                        <td class="text-end"><a href="/backend/delete/giftcard/<%= giftcard.uniqueid %>" class="text-danger">Delete</a></td>
+                    </tr>
+                  <% }); %>
+                </tbody>
+              </table>
+            </div>
+            <br>
+            <hr>
+            <h4><i class="fa-solid fa-star"></i> All Reviews</h4>
+            <div class="row justify-content-center">
+              <div class="col-lg-6">
+                <input type="text" class="form-control mb-3 darkinputcolor text-center searchbox" id="reviewUserSearch" onkeyup="searchBar(0, 'reviewUserSearch', 'reviewsTable')" placeholder="Search for a User Id..">
+              </div>
+              <div class="col-lg-6">
+                <input type="text" class="form-control mb-3 darkinputcolor text-center searchbox" id="reviewProductSearch" onkeyup="searchBar(2, 'reviewProductSearch', 'reviewsTable')" placeholder="Search for a product..">
+              </div>
+            </div>
+            <br>
+            <div class="customDiv">
+              <table class="table table-bordered border-white text-white" id="reviewsTable">
+                <thead>
+                  <tr>
+                    <th scope="col">User Id</th>
+                    <th scope="col">Username</th>
+                    <th scope="col">Product</th>
+                    <th scope="col"><i class="fa-solid fa-star"></i> Rating</th>
+                    <th scope="col" class="text-end">Options</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <% data.reviews.forEach(function(review) { %>
+                    <tr>
+                        <td><code><%= review.userid %></code></td>
+                        <td><%= review.username %></td>
+                        <td><%= review.itemname %></td>
+                        <td><%= review.rating %></td>
+                        <td class="text-end"><a href="/review/<%= review.uniqueid %>" class="text-theme">View</a> | <a href="/backend/delete/review/<%= review.uniqueid %>" class="text-danger">Delete</a></td>
+                    </tr>
+                  <% }); %>
+                </tbody>
+              </table>
+            </div>
+        </div>
+        <%- include('_footer') %>
+        <script>
+          function searchBar(position, bar, tbl) {
+            // Declare variables
+            var input, filter, table, tr, td, i, txtValue;
+            input = document.getElementById(bar);
+            filter = input.value.toUpperCase();
+            table = document.getElementById(tbl);
+            tr = table.getElementsByTagName("tr");
+
+            // Loop through all table rows, and hide those who don't match the search query
+            for (i = 0; i < tr.length; i++) {
+              td = tr[i].getElementsByTagName("td")[position];
+              if (td) {
+                txtValue = td.textContent || td.innerText;
+                if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                  tr[i].style.display = "";
+                } else {
+                  tr[i].style.display = "none";
+                }
+              }
+            }
+          };
+        </script>
+    </body>
+</html>

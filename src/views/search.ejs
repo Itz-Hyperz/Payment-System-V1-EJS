@@ -1,0 +1,76 @@
+<%
+    let daBoxStyle;
+    let daButtonStyle;
+    if(sitestyles.productlist == 1) {
+        daBoxStyle = "bg-theme boxshadowlight productbox bd-theme";
+        daButtonStyle = "btn-dark";
+    } else if(sitestyles.productlist == 2) {
+        daBoxStyle = "bg-dark boxshadowlight productbox bd-theme";
+        daButtonStyle = "btn-theme";
+    } else if(sitestyles.productlist == 3) {
+        daBoxStyle = "bg-dark productbox bd-theme";
+        daButtonStyle = "btn-theme";
+    } else if(sitestyles.productlist == 4) {
+        daBoxStyle = "bg-dark productbox";
+        daButtonStyle = "btn-theme";
+    } else {
+        daBoxStyle = "bg-theme productbox";
+        daButtonStyle = "btn-dark";
+    };
+%>
+
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Search - <%= sitesettings.sitename %></title>
+        <meta property="og:title" content="Search - <%= sitesettings.sitename %>" />
+        <link rel="icon" href="/assets/logo.png">
+        <meta property="og:image" content="/assets/logo.png">
+        <meta name="theme-color" content="<%= sitesettings.sitecolor %>">
+        <meta name="description" content="<%= sitesettings.sitedesc %>" />
+        <meta property="og:type" content="website" />
+        <meta property="og:description" content="<%= sitesettings.sitedesc %>" />
+    </head>
+    <body>
+        <%- include('_header') %>
+        <div class="container">
+            <h1>Search</h1>
+            <p>Search for something on the webstore!</p>
+            <br>
+            <form action="/search" method="post">
+                <div class="input-group mb-3 searchgroup">
+                    <input type="text" class="form-control searchbox" name="search" placeholder="Search something..." value="<%= search.query || '' %>" required>
+                    <button class="btn btn-theme" type="submit"><i class="fa-solid fa-magnifying-glass"></i> Search</button>
+                </div>
+            </form>
+            <hr>
+            <br>
+            <% if(search.valid) { %>
+                <div class="container">
+                    <h2>Products</h2>
+                    <p>Here are the products we found relating to your search.</p>
+                    <br>
+                    <div class="row justify-content-center">
+                        <% search.results.products.forEach(function(item) { %>
+                            <div class="col-lg-4 ">
+                                <div class="<%= daBoxStyle %>">
+                                    <img src="/images/product_<%= item.uniqueid %>.png" class="productimagelist" loading="lazy" alt="">
+                                    <p class="text-start producttitlelist"><%= item.name %></p>
+                                    <p class="text-start productpricelist"><%= config.paymentSettings.currencySymbol %><%= item.price %></p>
+                                    <hr>
+                                    <a href="/shop/<%= item.link %>" class="btn <%= daButtonStyle %> productbuttonlist">View Product</a>
+                                    <a href="/backend/addtocart/<%= item.uniqueid %>" class="btn <%= daButtonStyle %> productbuttonlist">Add to cart</a>
+                                </div>
+                            </div>
+                        <% }); %>
+                    </div>
+                </div>
+                <br>
+            <% } else { %>
+                <h4 class="text-center">No results found...</h4>
+            <% }; %>
+        </div>
+        <%- include('_footer') %>
+    </body>
+</html>

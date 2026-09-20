@@ -1,0 +1,185 @@
+<%
+  data.products = data.products.sort((a, b) => {
+    return a.pos - b.pos;
+  });
+  function convert(value) {
+    if(value) {
+      return "Yes";
+    } else {
+      return "No";
+    };
+  };
+%>
+
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Admin - <%= sitesettings.sitename %></title>
+        <meta property="og:title" content="Admin - <%= sitesettings.sitename %>" />
+        <link rel="icon" href="/assets/logo.png">
+        <meta property="og:image" content="/assets/logo.png">
+        <meta name="theme-color" content="<%= sitesettings.sitecolor %>">
+        <meta name="description" content="<%= sitesettings.sitedesc %>" />
+        <meta property="og:type" content="website" />
+        <meta property="og:description" content="<%= sitesettings.sitedesc %>" />
+    </head>
+    <body>
+        <%- include('_header') %>
+        <%- include('_admin_header') %>
+        <div class="container">
+            <h1><code>User Manager</code></h1>
+            <br>
+            <h4>All Users</h4>
+            <div class="row justify-content-center">
+              <div class="col-lg-6">
+                <input type="text" class="form-control mb-3 darkinputcolor text-center searchbox" id="userSearch" onkeyup="searchBar(1, 'userSearch', 'userSearchTable')" placeholder="Search for a User Id..">
+              </div>
+              <div class="col-lg-6">
+                <input type="text" class="form-control mb-3 darkinputcolor text-center searchbox" id="userSearchTwo" onkeyup="searchBar(0, 'userSearchTwo', 'userSearchTable')" placeholder="Search for a Username..">
+              </div>
+            </div>
+            <div class="customDiv">
+              <table class="table table-bordered border-white text-white" id="userSearchTable">
+                <thead>
+                  <tr>
+                    <th scope="col">Username</th>
+                    <th scope="col">User Id</th>
+                    <th scope="col">Email</th>
+                    <th scope="col">Client</th>
+                    <th scope="col" class="text-end">Options</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <% data.users.forEach(function(user) { %>
+                    <tr>
+                        <td><%= user.username %></td>
+                        <td><%= user.userid %></td>
+                        <td><p class="censored"><code><%= user.email %></code></p></td>
+                        <td><%= convert(user.client) %></td>
+                        <td class="text-end"><a href="/account/<%= user.userid %>" class="text-theme">View</a></td>
+                    </tr>
+                  <% }); %>
+                </tbody>
+              </table>
+            </div>
+            <br>
+            <hr>
+            <br>
+            <h4>Owned Items</h4>
+            <div class="row justify-content-center">
+              <div class="col-lg-6">
+                <input type="text" class="form-control mb-3 darkinputcolor text-center searchbox" id="productSearch" onkeyup="searchBar(1, 'productSearch', 'productSearchTable')" placeholder="Search for a Product..">
+              </div>
+              <div class="col-lg-6">
+                <input type="text" class="form-control mb-3 darkinputcolor text-center searchbox" id="productSearchTwo" onkeyup="searchBar(0, 'productSearchTwo', 'productSearchTable')" placeholder="Search for a User Id..">
+              </div>
+            </div>
+            <div class="customDiv">
+              <table class="table table-bordered border-white text-white" id="productSearchTable">
+                <thead>
+                  <tr>
+                    <th scope="col">User Id</th>
+                    <th scope="col">Product</th>
+                    <th scope="col">Date</th>
+                    <th scope="col">Price</th>
+                    <th scope="col" class="text-end">Options</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <% data.owneditems.forEach(function(item) { %>
+                    <tr>
+                        <td><p class="censored"><code><%= item.userid %></code></p></td>
+                        <td><%= item.productname %></td>
+                        <td><%= item.datebought %></td>
+                        <td><%= item.price %></td>
+                        <td class="text-end"><a href="/receipt/<%= item.receipt %>" class="text-theme">Receipt</a> | <a href="/account/<%= item.userid %>" class="text-theme">Account</a></td>
+                    </tr>
+                  <% }); %>
+                </tbody>
+              </table>
+            </div>
+            <br>
+            <hr>
+            <br>
+            <h4>Banned Users</h4>
+            <input type="text" class="form-control mb-3 darkinputcolor text-center searchbox" id="bannedUserSearch" onkeyup="searchBar(0, 'bannedUserSearch', 'bannedUsersTable')" placeholder="Search for a User Id..">
+            <div class="customDiv">
+              <table class="table table-bordered border-white text-white" id="bannedUsersTable">
+                <thead>
+                  <tr>
+                    <th scope="col">User Id</th>
+                    <th scope="col" class="text-end">Options</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <% data.bannedusers.forEach(function(daUser) { %>
+                    <tr>
+                        <td><code><%= daUser.userid %></code></td>
+                        <td class="text-end"><a href="/backend/account/toggleban/<%= daUser.userid %>" class="text-danger">Revoke Ban</a></td>
+                    </tr>
+                  <% }); %>
+                </tbody>
+              </table>
+            </div>
+            <br>
+            <hr>
+            <br>
+            <h4><i class="fa-solid fa-shield-halved"></i> Staff Members (Owners Only)</h4>
+            <form action="/backend/create/staff" method="post">
+              <div class="row justify-content-center">
+                <div class="col-lg-6">
+                  <input type="text" name="userid" class="form-control mb-3 darkinputcolor text-center searchbox" placeholder="Enter a User Id..." required>
+                </div>
+                <div class="col-lg-6">
+                  <button type="submit" class="btn btn-theme" style="width: 100%;"><i class="fa-solid fa-shield-halved"></i> Add Staff Member</button>
+                </div>
+              </div>
+            </form>
+            <hr>
+            <input type="text" class="form-control mb-3 darkinputcolor text-center searchbox" id="staffUserSearch" onkeyup="searchBar(0, 'staffUserSearch', 'staffUsersTable')" placeholder="Search for a User Id..">
+            <div class="customDiv">
+              <table class="table table-bordered border-white text-white" id="staffUsersTable">
+                <thead>
+                  <tr>
+                    <th scope="col">User Id</th>
+                    <th scope="col" class="text-end">Options</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <% data.staff.forEach(function(daUser) { %>
+                    <tr>
+                        <td><code><%= daUser.userid %></code></td>
+                        <td class="text-end"><a href="/backend/delete/staff/<%= daUser.userid %>" class="text-danger">Revoke Staff</a></td>
+                    </tr>
+                  <% }); %>
+                </tbody>
+              </table>
+            </div>
+        </div>
+        <%- include('_footer') %>
+        <script>
+          function searchBar(position, bar, tbl) {
+            // Declare variables
+            var input, filter, table, tr, td, i, txtValue;
+            input = document.getElementById(bar);
+            filter = input.value.toUpperCase();
+            table = document.getElementById(tbl);
+            tr = table.getElementsByTagName("tr");
+
+            // Loop through all table rows, and hide those who don't match the search query
+            for (i = 0; i < tr.length; i++) {
+              td = tr[i].getElementsByTagName("td")[position];
+              if (td) {
+                txtValue = td.textContent || td.innerText;
+                if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                  tr[i].style.display = "";
+                } else {
+                  tr[i].style.display = "none";
+                }
+              }
+            }
+          };
+        </script>
+    </body>
+</html>

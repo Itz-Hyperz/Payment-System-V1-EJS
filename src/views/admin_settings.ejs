@@ -1,0 +1,540 @@
+<%
+  function convert(value) {
+    if(value) {
+      return "Yes";
+    } else {
+      return "No";
+    };
+  };
+  function convertToEorD(value) {
+    if(value) {
+      return "Enabled";
+    } else {
+      return "Disabled";
+    };
+  };
+  function convertToWord(value) {
+    switch(value) {
+      case 0:
+        return 'Disabled';
+        break;
+      case 1:
+        return 'One';
+        break;
+      case 2:
+        return 'Two';
+        break;
+      case 3:
+        return 'Three';
+        break;
+      case 4:
+        return 'Four';
+        break;
+      case 5:
+        return 'Five';
+        break;
+      case 6:
+        return 'Six';
+        break;
+    };
+  };
+  function convertToWordLib(value) {
+    switch(value) {
+      case 1:
+        return 'One';
+        break;
+      case 2:
+        return 'Liberitarian';
+        break;
+    };
+  };
+%>
+
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Admin - <%= sitesettings.sitename %></title>
+        <meta property="og:title" content="Admin - <%= sitesettings.sitename %>" />
+        <link rel="icon" href="/assets/logo.png">
+        <meta property="og:image" content="/assets/logo.png">
+        <meta name="theme-color" content="<%= sitesettings.sitecolor %>">
+        <meta name="description" content="<%= sitesettings.sitedesc %>" />
+        <meta property="og:type" content="website" />
+        <meta property="og:description" content="<%= sitesettings.sitedesc %>" />
+    </head>
+    <body>
+        <%- include('_header') %>
+        <%- include('_admin_header') %>
+        <div class="container">
+            <h1><code>Settings Manager</code></h1>
+            <br>
+            <div class="row justify-content-center">
+              <div class="col-lg-12">
+                <button type="button" class="btn btn-theme mb-3" data-bs-toggle="modal" data-bs-target="#mainSettingsModal"><i class="fa-solid fa-gear"></i> Main Settings</button>
+                <button type="button" class="btn btn-theme mb-3" data-bs-toggle="modal" data-bs-target="#mainStylingModal"><i class="fa-solid fa-paintbrush"></i> Website Styling</button>
+                <button type="button" class="btn btn-theme mb-3" data-bs-toggle="modal" data-bs-target="#mainNotificationsModal"><i class="fa-solid fa-bell"></i> Notifications</button>
+                <!-- <button type="button" class="btn btn-theme mb-3" data-bs-toggle="modal" data-bs-target="#mainMassEmail"><i class="fa-solid fa-envelopes-bulk"></i> Mass Email</button> -->
+              </div>
+            </div>
+            <hr>
+            <br>
+            <h4><i class="fa-solid fa-location-dot"></i> Navigation Buttons</h4>
+            <form action="/backend/create/navbarbutton" method="post">
+              <div class="row justify-content-center">
+                <div class="col-lg-4">
+                  <input type="text" name="buttonname" class="form-control darkinputcolor searchbox" style="margin-bottom: 0.5em;" placeholder="Button name..." required>
+                </div>
+                <div class="col-lg-4">
+                  <input type="text" name="buttonlink" class="form-control darkinputcolor searchbox" style="margin-bottom: 0.5em;" placeholder="Button link..." required>
+                </div>
+                <div class="col-lg-4">
+                  <button type="submit" class="btn btn-theme" style="width: 100%;"><i class="fa-solid fa-location-dot"></i> Create Button</button>
+                </div>
+              </div>
+            </form>
+            <br>
+            <div class="customDiv">
+              <table class="table table-bordered border-white text-white">
+                <thead>
+                  <tr>
+                    <th scope="col">Button Name</th>
+                    <th scope="col">Button Link</th>
+                    <th scope="col" class="text-end">Options</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <% data.navbaritems.forEach(function(button) { %>
+                    <tr>
+                        <td><code><%= button.name %></code></td>
+                        <td><%= button.link %></td>
+                        <td class="text-end"><a href="/backend/delete/navbarbutton/<%= button.uniqueid %>" class="text-danger">Delete</a></td>
+                    </tr>
+                  <% }); %>
+                </tbody>
+              </table>
+            </div>
+            <br>
+            <hr>
+            <br>
+            <h4><i class="fa-solid fa-radio"></i> Frequently Asked Questions</h4>
+            <form action="/backend/create/faq" method="post">
+              <div class="row justify-content-center">
+                <div class="col-lg-4">
+                  <input type="text" name="question" class="form-control darkinputcolor searchbox" style="margin-bottom: 0.5em;" placeholder="Question..." required>
+                </div>
+                <div class="col-lg-4">
+                  <input type="text" name="answer" class="form-control darkinputcolor searchbox" style="margin-bottom: 0.5em;" placeholder="Answer..." required>
+                </div>
+                <div class="col-lg-4">
+                  <button type="submit" class="btn btn-theme" style="width: 100%;"><i class="fa-solid fa-radio"></i> Create FAQ</button>
+                </div>
+              </div>
+            </form>
+            <br>
+            <div class="customDiv">
+              <table class="table table-bordered border-white text-white">
+                <thead>
+                  <tr>
+                    <th scope="col">Question</th>
+                    <th scope="col">Answer</th>
+                    <th scope="col" class="text-end">Options</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <% data.faq.forEach(function(item) { %>
+                    <tr>
+                        <td><%= item.question %></td>
+                        <td><%= item.answer %></td>
+                        <td class="text-end"><a href="/backend/delete/faq/<%= item.uniqueid %>" class="text-danger">Delete</a></td>
+                    </tr>
+                  <% }); %>
+                </tbody>
+              </table>
+            </div>
+            <br>
+            <hr>
+            <br>
+            <h4><i class="fa-solid fa-image"></i> Gallery Images</h4>
+            <form action="/backend/create/galleryimage" method="post" enctype="multipart/form-data">
+              <div class="input-group mb-3">
+                <input type="file" name="galleryimage" class="form-control" id="inputGroupFile02">
+                <button type="submit" class="input-group-text btn-theme" for="inputGroupFile02">Upload</button>
+              </div>
+            </form>
+            <br>
+            <div class="customDiv">
+              <table class="table table-bordered border-white text-white">
+                <thead>
+                  <tr>
+                    <th scope="col">Image Redirect</th>
+                    <th scope="col" class="text-end">Options</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <% data.galleryimages.forEach(function(item) { %>
+                    <tr>
+                        <td><a class="text-theme" href="/images/<%= item.imagename %>" target="_blank">View image</a></td>
+                        <td class="text-end"><a href="/backend/delete/galleryimage/<%= item.uniqueid %>" class="text-danger">Delete</a></td>
+                    </tr>
+                  <% }); %>
+                </tbody>
+              </table>
+            </div>
+        </div>
+        <%- include('_footer') %>
+        <div class="modal fade" id="mainSettingsModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div class="modal-dialog modal-xl">
+            <div class="modal-content text-bg-dark">
+              <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel"><i class="fa-solid fa-gear"></i> Website Settings</h1>
+                <button type="button" class="btnnostyle closebutton" data-bs-dismiss="modal" aria-label="Close">&times;</button>
+              </div>
+              <form action="/backend/update/settings" method="post" enctype="multipart/form-data">
+                <div class="modal-body p-4 text-start">
+                  <div class="row justify-content-center">
+                    <div class="col-lg-6 mb-3">
+                      <label for="sitename"><i class="fa-solid fa-signature"></i> Website Name</label>
+                      <input type="text" name="sitename" placeholder="Website name..." value="<%= data.sitesettings.sitename %>" class="form-control darkinputcolor searchbox" required>
+                    </div>
+                    <div class="col-lg-6 mb-3">
+                      <label for="sitecolor"><i class="fa-solid fa-droplet"></i> Website Color HEX</label>
+                      <input type="text" name="sitecolor" placeholder="Website color hex..." value="<%= data.sitesettings.sitecolor %>" class="form-control darkinputcolor searchbox" required>
+                    </div>
+                    <div class="col-lg-6 mb-3">
+                      <label for="sitedesc"><i class="fa-solid fa-align-left"></i> Website Description</label>
+                      <textarea type="text" name="sitedesc" placeholder="Website description..." class="form-control darkinputcolor searchbox" rows="5" required><%= data.sitesettings.sitedesc %></textarea>
+                    </div>
+                    <div class="col-lg-6 mb-3">
+                      <label for="notification"><i class="fa-solid fa-bullhorn"></i> Website Announcement</label>
+                      <textarea type="text" name="notification" placeholder="Website announcement... (type none to disable)" class="form-control darkinputcolor searchbox" rows="5" required><%= data.sitesettings.notification %></textarea>
+                    </div>
+                    <div class="col-lg-6 mb-3">
+                      <label for="homeabout"><i class="fa-solid fa-house"></i> Website Homepage (<i class="fa-brands fa-markdown"></i>)</label>
+                      <textarea type="text" name="homeabout" placeholder="Website homepage content..." class="form-control darkinputcolor searchbox" rows="7" required><%= data.sitesettings.homeabout %></textarea>
+                    </div>
+                    <div class="col-lg-6 mb-3">
+                      <label for="guildid"><i class="fa-brands fa-discord"></i> Discord Server Id</label>
+                      <input type="text" name="guildid" placeholder="Discord Server Id..." value="<%= data.sitesettings.guildid %>" class="form-control darkinputcolor searchbox" required>
+                      <label for="globalcustomer" style="margin-top: 0.4em;"><i class="fa-solid fa-tag"></i> Global Customer Role Id</label>
+                      <input type="text" name="globalcustomer" placeholder="Global Customer Role Id..." value="<%= data.sitesettings.globalcustomer %>" class="form-control darkinputcolor searchbox">
+                      <label for="loggingchannelid" style="margin-top: 0.4em;"><i class="fa-solid fa-newspaper"></i> Store Logging Channel Id</label>
+                      <input type="text" name="loggingchannelid" placeholder="Logging channel Id..." value="<%= data.sitesettings.loggingchannelid %>" class="form-control darkinputcolor searchbox">
+                    </div>
+                    <div class="col-lg-6 mb-3">
+                      <label for="logo"><i class="fa-solid fa-camera-retro"></i> Website Logo (PNG)</label>
+                      <input type="file" name="logo" accept=".png" class="form-control darkinputcolor searchbox">
+                    </div>
+                    <div class="col-lg-6 mb-3">
+                      <label for="header"><i class="fa-solid fa-panorama"></i> Website Header (JPG)</label>
+                      <input type="file" name="header" accept=".jpg" class="form-control darkinputcolor searchbox">
+                    </div>
+                    <div class="col-lg-6 mb-3">
+                      <label for="firewallgg"><i class="fa-solid fa-shield-halved"></i> Enforce FirewallGG Bans</label>
+                      <select name="firewallgg" class="form-control darkinputcolor searchbox" required>
+                        <option value="<%= data.sitesettings.firewallgg || 1 %>" selected><%= convert(data.sitesettings.firewallgg) %> (Current)</option>
+                        <option value="1">Yes</option>
+                        <option value="0">No</option>
+                      </select>
+                    </div>
+                    <div class="col-lg-6 mb-3">
+                      <label for="maintenance"><i class="fa-solid fa-heart-pulse"></i> Maintenance Mode</label>
+                      <select name="maintenance" class="form-control darkinputcolor searchbox" required>
+                        <option value="<%= data.sitesettings.maintenance %>" selected><%= convert(data.sitesettings.maintenance) %> (Current)</option>
+                        <option value="1">Yes</option>
+                        <option value="0">No</option>
+                      </select>
+                    </div>
+                    <div class="col-lg-12 mb-3">
+                      <label for="demotext"><i class="fa-solid fa-link"></i> Demo Button Text</label>
+                      <input type="text" name="demotext" class="form-control darkinputcolor searchbox" placeholder="Try Me!" value="<%= data.sitesettings.demotext %>">
+                    </div>
+                    <hr>
+                    <div class="col-lg-12 mb-3">
+                      <label for="email"><i class="fa-solid fa-envelope"></i> Email Address (setting a value to <code>none</code> will disable it)</label>
+                      <input type="text" name="email" placeholder="support@hyperz.net" value="<%= data.sitesettings.email %>" class="form-control darkinputcolor searchbox">
+                    </div>
+                    <div class="col-lg-6 mb-3">
+                      <label for="twitter"><i class="fa-brands fa-twitter"></i> Twitter Handle</label>
+                      <input type="text" name="twitter" placeholder="Itz_Hyperz" value="<%= data.sitesettings.twitter %>" class="form-control darkinputcolor searchbox">
+                    </div>
+                    <div class="col-lg-6 mb-3">
+                      <label for="discord"><i class="fa-brands fa-discord"></i> Discord Server</label>
+                      <input type="text" name="discord" placeholder="https://discord.gg/CQT4Vh937B" value="<%= data.sitesettings.discord %>" class="form-control darkinputcolor searchbox">
+                    </div>
+                    <div class="col-lg-6 mb-3">
+                      <label for="youtube"><i class="fa-brands fa-youtube"></i> YouTube URL</label>
+                      <input type="text" name="youtube" placeholder="https://youtube.com/thatguyhyperz" value="<%= data.sitesettings.youtube %>" class="form-control darkinputcolor searchbox">
+                    </div>
+                    <div class="col-lg-6 mb-3">
+                      <label for="instagram"><i class="fa-brands fa-instagram"></i> Instagram Handle</label>
+                      <input type="text" name="instagram" placeholder="hyperzdev" value="<%= data.sitesettings.instagram %>" class="form-control darkinputcolor searchbox">
+                    </div>
+                    <div class="col-lg-6 mb-3">
+                      <label for="facebook"><i class="fa-brands fa-facebook"></i> Facebook URL</label>
+                      <input type="text" name="facebook" placeholder="https://facebook.com" value="<%= data.sitesettings.facebook %>" class="form-control darkinputcolor searchbox">
+                    </div>
+                    <div class="col-lg-6 mb-3">
+                      <label for="tiktok"><i class="fa-brands fa-tiktok"></i> TikTok Handle</label>
+                      <input type="text" name="tiktok" placeholder="@hated.silverado" value="<%= data.sitesettings.tiktok %>" class="form-control darkinputcolor searchbox">
+                    </div>
+                    <hr>
+                    <div class="col-lg-12 mb-3">
+                      <label for="termsofservice"><i class="fa-solid fa-scroll"></i> Terms of Service (<i class="fa-brands fa-markdown"></i>)</label>
+                      <textarea type="text" name="termsofservice" id="termsofservice" placeholder="Terms of service/use here..." class="form-control darkinputcolor searchbox" rows="7" required><%= data.sitesettings.termsofservice %></textarea>
+                    </div>
+                    <div class="col-lg-6 mb-3">
+                      <label for="privacypolicy"><i class="fa-solid fa-user-lock"></i> Privacy Policy (<i class="fa-brands fa-markdown"></i>)</label>
+                      <textarea type="text" name="privacypolicy" id="privacypolicy" placeholder="Your privacy policy..." class="form-control darkinputcolor searchbox" rows="6" required><%= data.sitesettings.privacypolicy %></textarea>
+                    </div>
+                    <div class="col-lg-6 mb-3">
+                      <label for="cookiepolicy"><i class="fa-solid fa-cookie-bite"></i> Cookie Policy (<i class="fa-brands fa-markdown"></i>)</label>
+                      <textarea type="text" name="cookiepolicy" id="cookiepolicy" placeholder="Your cookie policy..." class="form-control darkinputcolor searchbox" rows="6" required><%= data.sitesettings.cookiepolicy %></textarea>
+                    </div>
+                  </div>
+                  <p>Reset Defaults:</p>
+                  <button type="button" onclick="setDefaults(1)" class="btn btn-outline-theme">Terms of Service</button>
+                  <button type="button" onclick="setDefaults(2)" class="btn btn-outline-theme">Privacy Policy</button>
+                  <button type="button" onclick="setDefaults(3)" class="btn btn-outline-theme">Cookie Policy</button>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                  <button type="submit" class="btn btn-theme"><i class="fa-solid fa-floppy-disk"></i> Save All Changes</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+        <div class="modal fade" id="mainStylingModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div class="modal-dialog modal-xl">
+            <div class="modal-content text-bg-dark">
+              <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel"><i class="fa-solid fa-paintbrush"></i> Website Styling</h1>
+                <button type="button" class="btnnostyle closebutton" data-bs-dismiss="modal" aria-label="Close">&times;</button>
+              </div>
+              <form action="/backend/update/styling" method="post">
+                <div class="modal-body text-start p-4">
+                  <div class="row justify-content-center">
+                    <div class="col-lg-6 mb-3">
+                      <label for="headerstyle"><i class="fa-solid fa-heading"></i> Header Display</label>
+                      <select name="headerstyle" class="form-select" required>
+                        <option value="<%= data.sitestyles.headerstyle %>" selected><%= convertToWord(data.sitestyles.headerstyle) %> (Current)</option>
+                        <option value="1">One</option>
+                        <option value="2">Two</option>
+                        <option value="3">Three</option>
+                        <option value="4">Four</option>
+                        <option value="5">Five</option>
+                        <option value="6">Six</option>
+                      </select>
+                    </div>
+                    <div class="col-lg-6 mb-3">
+                      <label for="footerstyle"><i class="fa-solid fa-shoe-prints"></i> Footer Display</label>
+                      <select name="footerstyle" class="form-select" required>
+                        <option value="<%= data.sitestyles.footerstyle %>" selected><%= convertToWord(data.sitestyles.footerstyle) %> (Current)</option>
+                        <option value="1">One</option>
+                        <option value="2">Two</option>
+                        <option value="3">Three</option>
+                      </select>
+                    </div>
+                    <div class="col-lg-6 mb-3">
+                      <label for="headerchoice"><i class="fa-solid fa-heading"></i> Header Choice</label>
+                      <select name="headerchoice" class="form-select" required>
+                        <option value="<%= data.sitestyles.headerchoice %>" selected><%= convertToWord(data.sitestyles.headerchoice) %> (Current)</option>
+                        <option value="1">One</option>
+                        <option value="2">Two</option>
+                      </select>
+                    </div>
+                    <div class="col-lg-6 mb-3">
+                      <label for="footerchoice"><i class="fa-solid fa-shoe-prints"></i> Footer Choice</label>
+                      <select name="footerchoice" class="form-select" required>
+                        <option value="<%= data.sitestyles.footerchoice %>" selected><%= convertToWordLib(data.sitestyles.footerchoice) %> (Current)</option>
+                        <option value="1">One</option>
+                        <option value="2">Liberitarian</option>
+                      </select>
+                    </div>
+                    <div class="col-lg-6 mb-3">
+                      <label for="homepage"><i class="fa-solid fa-house"></i> Homepage Display</label>
+                      <select name="homepage" class="form-select" required>
+                        <option value="<%= data.sitestyles.homepage %>" selected><%= convertToWord(data.sitestyles.homepage) %> (Current)</option>
+                        <option value="1">One</option>
+                        <option value="2">Two</option>
+                      </select>
+                    </div>
+                    <div class="col-lg-6 mb-3">
+                      <label for="homepagefeatprod"><i class="fa-solid fa-lightbulb"></i> Homepage Featured Product</label>
+                      <select name="homepagefeatprod" class="form-select" required>
+                        <option value="<%= data.sitestyles.homepagefeatprod || 'none' %>" selected><%= data?.products?.filter(x => x.uniqueid == data.sitestyles.homepagefeatprod)[0]?.name || 'none' %> (Current)</option>
+                        <option value="none">None (Disabled function)</option>
+                        <% data.products.forEach(function(product) { %>
+                          <option value="<%= product.uniqueid %>"><%= product.name %></option>
+                        <% }); %>
+                      </select>
+                    </div>
+                    <div class="col-lg-6 mb-3">
+                      <label for="homepagereviews"><i class="fa-solid fa-star"></i> Homepage Reviews Display</label>
+                      <select name="homepagereviews" class="form-select" required>
+                        <option value="<%= data.sitestyles.homepagereviews || 0 %>" selected><%= convertToEorD(data.sitestyles.homepagereviews) %> (Current)</option>
+                        <option value="1">Enabled</option>
+                        <option value="0">Disabled</option>
+                      </select>
+                    </div>
+                    <div class="col-lg-6 mb-3">
+                      <label for="productreviews"><i class="fa-solid fa-star"></i> Product Reviews Display</label>
+                      <select name="productreviews" class="form-select" required>
+                        <option value="<%= data.sitestyles.productreviews || 0 %>" selected><%= convertToEorD(data.sitestyles.productreviews) %> (Current)</option>
+                        <option value="1">Enabled</option>
+                        <option value="0">Disabled</option>
+                      </select>
+                    </div>
+                    <div class="col-lg-6 mb-3">
+                      <label for="storeitems"><i class="fa-solid fa-piggy-bank"></i> Product List Display</label>
+                      <select name="storeitems" class="form-select" required>
+                        <option value="<%= data.sitestyles.productlist %>" selected><%= convertToWord(data.sitestyles.productlist) %> (Current)</option>
+                        <option value="1">One</option>
+                        <option value="2">Two</option>
+                        <option value="3">Three</option>
+                        <option value="4">Four</option>
+                        <option value="5">Five</option>
+                      </select>
+                    </div>
+                    <div class="col-lg-6 mb-3">
+                      <label for="productgallery"><i class="fa-solid fa-image"></i> Product Gallery Display</label>
+                      <select name="productgallery" class="form-select" required>
+                        <option value="<%= data.sitestyles.productgallery %>" selected><%= convertToWord(data.sitestyles.productgallery) %> (Current)</option>
+                        <option value="0">Disabled</option>
+                        <option value="1">One</option>
+                        <option value="2">Two</option>
+                      </select>
+                    </div>
+                    <div class="col-lg-6 mb-3">
+                      <label for="productcredits"><i class="fa-solid fa-scroll"></i> Product Credits Display</label>
+                      <select name="productcredits" class="form-select" required>
+                        <option value="<%= data.sitestyles.productcredits %>" selected><%= convertToEorD(data.sitestyles.productcredits) %> (Current)</option>
+                        <option value="0">Disabled</option>
+                        <option value="1">Enabled</option>
+                      </select>
+                    </div>
+                    <div class="col-lg-6 mb-3">
+                      <label for="productsearch"><i class="fa-solid fa-magnifying-glass"></i> Store Search Bar Display</label>
+                      <select name="productsearch" class="form-select" required>
+                        <option value="<%= data.sitestyles.productsearch %>" selected><%= convertToEorD(data.sitestyles.productsearch) %> (Current)</option>
+                        <option value="0">Disabled</option>
+                        <option value="1">Enabled</option>
+                      </select>
+                    </div>
+                    <div class="col-lg-6 mb-3">
+                      <label for="teampage"><i class="fa-solid fa-people-group"></i> Teams Page</label>
+                      <select name="teampage" class="form-select" required>
+                        <option value="<%= data.sitestyles.teampage || 0 %>" selected><%= convertToEorD(data.sitestyles.teampage) %> (Current)</option>
+                        <option value="1">Enabled</option>
+                        <option value="0">Disabled</option>
+                      </select>
+                    </div>
+                    <div class="col-lg-6 mb-3">
+                      <label for="partnerspage"><i class="fa-solid fa-handshake"></i> Partners Page</label>
+                      <select name="partnerspage" class="form-select" required>
+                        <option value="<%= data.sitestyles.partnerspage || 0 %>" selected><%= convertToEorD(data.sitestyles.partnerspage) %> (Current)</option>
+                        <option value="1">Enabled</option>
+                        <option value="0">Disabled</option>
+                      </select>
+                    </div>
+                    <div class="col-lg-6 mb-3">
+                      <label for="reviewspage"><i class="fa-regular fa-star-half-stroke"></i> Reviews Page</label>
+                      <select name="reviewspage" class="form-select" required>
+                        <option value="<%= data.sitestyles.reviewspage || 0 %>" selected><%= convertToEorD(data.sitestyles.reviewspage) %> (Current)</option>
+                        <option value="1">Enabled</option>
+                        <option value="0">Disabled</option>
+                      </select>
+                    </div>
+                    <div class="col-lg-6 mb-3">
+                      <label for="giftcards"><i class="fa-solid fa-gift"></i> Gift Cards</label>
+                      <select name="giftcards" class="form-select" required>
+                        <option value="<%= data.sitestyles.giftcards || 0 %>" selected><%= convertToEorD(data.sitestyles.giftcards) %> (Current)</option>
+                        <option value="1">Enabled</option>
+                        <option value="0">Disabled</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                  <button type="submit" class="btn btn-theme"><i class="fa-solid fa-floppy-disk"></i> Save Changes</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+        <div class="modal fade" id="mainNotificationsModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div class="modal-dialog modal-lg">
+            <div class="modal-content text-bg-dark">
+              <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel"><i class="fa-solid fa-bell"></i> Notifications</h1>
+                <button type="button" class="btnnostyle closebutton" data-bs-dismiss="modal" aria-label="Close">&times;</button>
+              </div>
+              <form action="/backend/notify/create" method="post">
+                <div class="modal-body text-start">
+                  <label for="userid"><i class="fa-solid fa-user"></i> User Id</label>
+                  <input type="text" name="userid" class="form-control darkinputcolor" placeholder="The user's Id..." required>
+                  <br>
+                  <label for="userid"><i class="fa-solid fa-envelope"></i> Content</label>
+                  <textarea type="text" name="content" class="form-control darkinputcolor" placeholder="Notification content..." rows="4" required></textarea>
+                  <br>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                  <button type="submit" class="btn btn-theme"><i class="fa-solid fa-bell"></i> Create Notification</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+        <div class="modal fade" id="mainMassEmail" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div class="modal-dialog modal-xl">
+            <div class="modal-content text-bg-dark">
+              <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel"><i class="fa-solid fa-envelopes-bulk"></i> Mass Email</h1>
+                <button type="button" class="btnnostyle closebutton" data-bs-dismiss="modal" aria-label="Close">&times;</button>
+              </div>
+              <form action="/backend/massemail/create" method="post">
+                <div class="modal-body text-start">
+                  <label for="recipients"><i class="fa-solid fa-users"></i> Recipients</label>
+                  <select name="recipients" class="form-control darkinputcolor" required>
+                    <option value="0" selected>All Users</option>
+                    <option value="1">All Clients</option>
+                  </select>
+                  <br>
+                  <label for="subject"><i class="fa-solid fa-envelope"></i> Subject</label>
+                  <input type="text" name="subject" class="form-control darkinputcolor" placeholder="The E-Mail subject..." required>
+                  <br>
+                  <label for="content"><i class="fa-solid fa-envelope"></i> Content (supports RAW html)</label>
+                  <textarea type="text" name="content" class="form-control darkinputcolor" placeholder="Your E-Mail content..." rows="12" required></textarea>
+                  <br>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                  <button type="submit" class="btn btn-theme"><i class="fa-solid fa-envelopes-bulk"></i> Send Mass Email</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+        <script>
+          var tos = document.getElementById("termsofservice");
+          var privacy = document.getElementById("privacypolicy");
+          var cookies = document.getElementById("cookiepolicy");
+          function setDefaults(value) {
+            switch(value) {
+              case 1:
+                tos.value = "See bottom section for amendment logs\n\nThis document outlines the rules and guidelines that governs the use of the <%= data.sitesettings.sitename %> website along with products. By visiting, purchasing a product, or creating an account on this website these terms of services apply to the user.\nThese Terms of Service (“Terms”) govern your use of this website, applications, sold licensed software, or other associated platforms.\n\n---\n\n### Business Details:\nBusiness Name: <%= data.sitesettings.sitename %>®\nContact Email: me@<%= config.domain.split('://')[1] %>\nContact us: <%= config.domain %>/contact\n\n---\n\n# 1. Definitions\n1. “Product(s)” is used to describe the application, licensed software, or any item sold on our online store.\n2. “You”, “Your”, and “User” is used to describe the end-user viewing and reading this page.\n3. “Use” and “Using” is used to describe your use of the product, by either downloading, installing, activating, or running the product.\n4. “Agreement” refers to this document\n# 2. Information and Product Use\n1. When agreeing to this agreement your information is kept on a secure network to protect your data as best as possible.\n2. Third parties are able to request access to your information. However, this request must meet the requirements set in place for each party to access your information.\n3. Using products in any way that is illegal (i.e. selling copyrighted works, threatening content) can result in breaching of this agreement. You can report any misconduct to `me@<%= config.domain.split('://')[1] %>` with proof of breaching this section.\n4. <%= data.sitesettings.sitename %> reserves the right at any point in time to remove your access and rights to a product for any reason with 0 repercussions on our end. \n\n# 3. Third Parties and Security\n1. Some products require hosting to be put into a live World Wide Web environment. There is no restriction on where you can host the product to make it available to you. This mainly applies to products to be hosted on a Virtual Private Server (VPS) or another type of online server.\n2. Any party that you give access to your host machine is required to follow this agreement. You are responsible for giving your third parties this agreement and having them create an account.\n3. You are responsible for the security of any owned product and not having this agreement breached. If the agreement is breached by a third party of yours, action can be taken against you and the others involved. It’s recommended to ensure this agreement is alongside the product to help protect yourself from breaching this agreement. See ‘Agreement Availability’ for more information.\n4. If you suspect your third party has breached this agreement contact <%= data.sitesettings.sitename %> directly to help resolve the issue.\n5. We use the social media platform Discord as our community hub for support and general questions. This includes other community members.\nMembers in our Discord may give suggestions for any support requests made. We accept no liability for misinformation spread from community members. We do have a dedicated product support team which are able to give verified advice.\n6. The product can only be used by the purchaser of the product, this includes for the use of the product. For example, using the product to host your friends store is not permitted. You can only use the product for projects/businesses you own. Exceptions can be granted by requesting to `me@<%= config.domain.split('://')[1] %>`\n7. If you are removed from our Discord community or banned from it you may be banned on the website as-well. This does not happen in all cases, however be aware that it is a major possibility.\n\n# 4. Product Alterations\n1. You’re able to edit the contents of a product as long as it meets the agreement in every way listed.\n2. You’re not permitted to alter, modify, edit, delete, or change the license system integration in our products.\n\n# 5. Distributing Products\n1. No product is permitted to be re-distributed to other entities without written permission from <%= data.sitesettings.sitename %>. This excludes a VPS and/or server hosting company as the product is still under your account through the hosting company.\n\n# 6. Agreement and Service Availability\n1. This Agreement must remain in its original state and must not be modified in any way.\n2. This Agreement must be alongside the product at all times and not be removed.\n3. If our system(s) including the license system is offline some of your own services may become offline as a result.\n4. If a product is removed from our store DO NOT expect to be able to download it again. We encourage our customers and supporters to keep backups of their owned items at all times.\n\n# 7. Product Credits and Authors\n1. Do not take credit for the product. Removing credits from inside the products file(s) is prohibited.\n2. Some products may have other authors/creators not directly listed in the product files themselves. These credits can be found via the store page for the product.\n\n# 8. Payments and Refunds\n1. We currently only accept PayPal and Card transactions through the Stripe platform. We ourselves do not handle payments through our system.\n2. Refunds are handled per request. No guarantees are made for any refund request.\nTo meet full refund requirements you must;\n\n> Not have downloaded the product\n> Not have previous license system requests for the item\n> Not have been more than 14 days\n\nWe also offer partial refunds in some cases to compensate for a no longer used item. Partial refund requirements include;\n\n> Not have used the product for longer than 30 days\n\nPlease note that once a refund has been granted upon request, the item will be removed and no longer be accessible.\n\n# 9. Product Warranty and Gain\n1. This product is not to be exploited for personal, financial or commercial gain.\n2. Responsibility for any damages caused by this product or its misuse rest solely with the user, as the author(s) will accept no liability. Appropriate support can be given and provided where deemed needed.\n3. Products turn to legacy editions or become decommissioned overtime. When this happens we are not required to give you a refund, and will usually put notice that a product is reaching a legacy edition *before* decommissioning it.\n4. If a product becomes decommissioned or reaches a legacy edition, do not expect a refund unless you meet the refund criteria in *Chapter 8, Section 2*.\n# 10. Agreement Violations\n1. Breaching and/or violating this agreement with a product can result in termination of services from <%= data.sitesettings.sitename %> and/or its third parties. Investigations will be performed and all involved will have action taken on them where deemed necessary.\n2. If you have been found breaching and/or violating this agreement contact may be made with an affiliate group - Stronger Together Network. This is a group aimed at providing security to other product creators and helping the surrounding community remain safe. See their site for more details - https://strongertogether.network.\n3. If found breaching this agreement, your access and associated license key(s) will be deleted or restricted;\n4. Additionally, your account on our system may be banned, deleted, or disabled.\n\n# 11. Reseller Licensing\n1. You WILL receive updates free of charge.\n2. You are required to price match with the lifetime version of the product you are reselling.\n3. You may NOT release the product openly for free.\n4. You may __NOT RESELL THE RESELLER LICENSE__.\n5. Do NOT label or sell/market the product as the original name of the product.\n6. You are REQUIRED to leave the credits inside of the product/application.\n7. You are REQUIRED to integrate your own license system to avoid theft.\n8. You may not leak or release any of the code.\n9. You may not use bits and pieces of the code and then not give credit in other projects.\n10. You will NEVER be given a refund for reseller license purchases as the product sales are not reversable for your own clients that purchase it.\n11. If anyone asks who programmed / wrote the product, you are REQUIRED to say `<%= data.sitesettings.sitename %>`.";
+                break;
+              case 2:
+                privacy.value = "Your information is valuable and we are pleased to provide information regarding your privacy.\n\n# Kinds of personal information we collect and store\nAs we use third parties for our login methods, we collect information provided by these services. Information we collect is.\n- Account IDs\n- Emails\n- Guilds (Discord Only)\n- Creation of your account\n- Account profile photo/avatar\n- Internet Protocol (IP)\n- Payment Information (for PayPal, we collect your account handle/email, for Stripe transactions we collect the last 4 digits of your card, along with transaction Ids for both services.)\n\nPossible login services we can enable are; Discord, GitHub, Google, and Twitter, these services give basic information supplied by their API. Their Terms of Service and privacy policies can be viewed on their respective platforms.\n\n# How we collect your information\nOnce you log in and create an account your information from there is collected and stored in our secure database. This information includes the kinds of personal information listed above. Payment information is only collected when a purchase has been made on our website.\n\n# How we use your information\nWe actively use your information on your account page along with administrational logs which include; payment history, audit logs, receipts.\n\nWe also use your information with our third parties which are able to request user information access, these third parties are listed below.\n\nAdditionally, we also collect data to use in advertising on various advertisement platforms. The shared information with advertising is broad and is not figures for individual user accounts. The data is collected and used as a sum total between all users to gather statistics for our website.\n\n# Verified Third Parties:\n- Stronger Together Network, can request basic user information which is displayed on public user-profiles and in accordance with our Terms of Service.";
+                break;
+              case 3:
+                cookies.value = "This cookie policy outlines how <%= data.sitesettings.sitename %> uses “cookies” and other similar technologies, in connection with our site and related services.\n\n# What is a Cookie?\nCookies are small text files stored in a computer's browser directory. They help website providers with understanding how people use a website, remembering user login details, and storing website preferences.\n\n# Does <%= data.sitesettings.sitename %> use Cookies?\nYes we do use cookies to:\n- ensure that services function properly,\n- understand how visitors use our website,\n- analyse and improve services\n\n# Who sets cookies when I use <%= data.sitesettings.sitename %>'s Site?\nThere are two types of cookies that are set;\n- First party cookies: these cookies are placed and read by <%= data.sitesettings.sitename %> directly when you use our services\n- Third-party cookies: these cookies are not set by <%= data.sitesettings.sitename %>, they are set by other companies, like Google for website analytic purposes.";
+                break;
+            };
+          };
+        </script>
+    </body>
+</html>

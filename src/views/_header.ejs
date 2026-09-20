@@ -1,0 +1,416 @@
+<%
+  let deCart = [];
+  if(typeof user.cart != 'undefined') {
+    deCart = JSON.parse(user.cart);
+  };
+  let totalValue = 0;
+
+  let headerStyle;
+  let middleStuffs = "";
+  if(sitestyles.headerstyle == 1) {
+    headerStyle = "navbar navbar-expand-lg customheader text-white p-4";
+    middleStuffs = "mtheader-2";
+  } else if(sitestyles.headerstyle == 2) {
+    headerStyle = "navbar navbar-expand-lg customheader text-white p-4 bg-theme";
+    middleStuffs = "mtheader-2";
+  } else if(sitestyles.headerstyle == 3) {
+    headerStyle = "navbar navbar-expand-lg customheader text-white p-4 bg-thatdark";
+    middleStuffs = "mtheader-2";
+  } else if(sitestyles.headerstyle == 4) {
+    headerStyle = "navbar navbar-expand-lg customheader text-white p-4 position-fixed w-100";
+    middleStuffs = "mtheader-1";
+  } else if(sitestyles.headerstyle == 5) {
+    headerStyle = "navbar navbar-expand-lg customheader text-white p-4 bg-theme position-fixed w-100";
+    middleStuffs = "mtheader-1";
+  } else if(sitestyles.headerstyle == 6) {
+    headerStyle = "navbar navbar-expand-lg customheader text-white p-4 bg-thatdark position-fixed w-100";
+    middleStuffs = "mtheader-1";
+  };
+%>
+
+<!-- Bootstrap CSS -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
+
+<!-- Google Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Exo:ital@1&family=Montserrat:wght@500&family=Source+Code+Pro:wght@200;300&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"><script>console.log("%cPayment System","color: #0099ff; font-size: 30px; font-weight: 700;");console.log('%cOwner Ids: <%= config.ownerIds %>', 'font-size: 13px;');console.log("%cVersion - <%= packagejson.version %>","color: #eb3483; font-size: 15px; font-weight: 700;");console.log("%cPurchase - https://hyperz.net/discord","color: #00ff91; font-size: 15px; font-weight: 700;");console.log("%cDesigned by Hyperz#0001","color: #0099ff; font-size: 15px; font-weight: 700;");console.log("%cDebug Mode: <%= config.debugMode %>","color: #eb8934; font-size: 15px; font-weight: 700;")</script>
+
+<!-- Custom Styling & Scripts -->
+<link rel="stylesheet" href="/assets/main.css">
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.1.1/css/all.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js" integrity="sha384-oBqDVmMz9ATKxIep9tiCxS/Z9fNfEXiDAYTujMAeBAsjFuCZSmKbSSUnQlmh/jp3" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2" crossorigin="anonymous" defer></script>
+
+<style>
+    a:hover {
+      color: <%= sitesettings.sitecolor %>;
+    }
+    .bg-theme {
+        background-color: <%= sitesettings.sitecolor %> !important;
+    }
+    .bd-theme, .linkeditem {
+        border-style: solid;
+        border-color: <%= sitesettings.sitecolor %> !important;
+    }
+    .text-theme {
+        color: <%= sitesettings.sitecolor %> !important;
+    }
+    .btn-theme {
+      color: white;
+      background-color: <%= sitesettings.sitecolor %>;
+    }
+    .btn-theme:hover {
+      border-color: <%= sitesettings.sitecolor %>;
+      background-color: <%= sitesettings.sitecolor %>;
+    }
+    .btn-outline-theme {
+      border-color: <%= sitesettings.sitecolor %> !important;
+    }
+    .btn-outline-theme:hover, .btn-outline-theme:focus {
+      background-color: <%= sitesettings.sitecolor %>;
+      border-color: <%= sitesettings.sitecolor %> !important;
+    }
+    .form-check-input:checked {
+      background-color: <%= sitesettings.sitecolor %>;
+      border-color: <%= sitesettings.sitecolor %>;
+    }
+    .productpagecontainer a, .convertli a, .convertPara a {
+      color: <%= sitesettings.sitecolor %>;
+    }
+    table th {
+      background-color: <%= sitesettings.sitecolor %> !important;
+    }
+    /* Highlight Stuffs */
+    ::selection {
+        background: <%= sitesettings.sitecolor %>; /* WebKit/Blink Browsers */
+    }
+    ::-moz-selection {
+        background: <%= sitesettings.sitecolor %>; /* Gecko Browsers */
+    }
+</style>
+
+<% if(sitestyles.headerchoice == 1) { %>
+  <!-- ANNOUNCEMENT START -->
+  <% if(sitestyles.headerstyle < 4) { %>
+    <% if(sitesettings.notification != 'none') { %>
+      <div class="bg-theme text-center text-black p-2">
+          <p class="notificationtext"><%= sitesettings.notification %></p>
+      </div>
+    <% }; %>
+  <% }; %>
+  <!-- ANNOUNCEMENT END -->
+  <div class="headerimage">
+      <!-- NAVIGATION BAR START -->
+      <nav class="<%= headerStyle %>">
+          <div class="container-fluid">
+            <a class="navbar-brand animate__animated animate__bounceInLeft" href="#"><%= sitesettings.sitename %></a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasDarkNav" aria-controls="offcanvasDarkNav" aria-expanded="false" aria-label="Toggle navigation">
+              <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+              <div class="navbar-nav animate__animated animate__bounceInRight">
+                <% navbaritems.forEach(function (item) { %>
+                  <a class="nav-link" href="<%= item.link %>"><%= item.name %></a>
+                <% }); %>
+                <% if(user != false) { %>
+                  <button class="notiicon btnnostyle position-relative me-1 ms-1" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRightNotis" aria-controls="offcanvasRight">
+                    <i class="fa-solid fa-bell"></i>
+                    <% if(typeof user.notifications != 'undefined') { %>
+                      <% if(user.notifications.find(o => o.hasbeenread == false) != undefined) { %>
+                        <span class="position-absolute top-10 start-100 translate-middle p-1 bg-theme border bd-theme rounded-circle"></span>
+                      <% }; %>
+                    <% }; %>
+                  </button>
+                <% }; %>
+                <% if(sitestyles.productsearch) { %>
+                  <a class="nav-link me-1" href="/search">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                  </a>
+                <% }; %>
+                <button class="carticon btnnostyle me-1" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRightCart" aria-controls="offcanvasRight">
+                  <i class="fa-solid fa-cart-shopping"></i>
+                </button>
+                <a class="nav-link me-1" href="/account">
+                  <i class="fa-solid fa-user"></i>
+                </a>
+              </div>
+            </div>
+          </div>
+      </nav>
+      <!-- NAVIGATION BAR END -->
+      <br>
+      <!-- ANNOUNCEMENT START -->
+      <% if(sitestyles.headerstyle > 3) { %>
+        <% if(sitesettings.notification != 'none') { %>
+          <br>
+          <br>
+          <div class="bg-theme text-center text-black p-2 mt-3 w-100">
+              <p class="notificationtext"><%= sitesettings.notification %></p>
+          </div>
+        <% } else { %>
+          <br>
+          <br>
+          <br>
+          <br>
+        <% }; %>
+      <% }; %>
+      <!-- ANNOUNCEMENT END -->
+      <style>
+        .mtheader-1 {
+          margin-top: 10em !important;
+        }
+      </style>
+      <!-- MIDDLE CONTENT START -->
+      <div class="middlecontent <%= middleStuffs %>">
+          <p class="midtitle"><%= sitesettings.sitename %></p>
+          <p class="midpg"><%- sitesettings.sitedesc %></p>
+          <a href="/shop" class="midbutton bg-theme bd-theme"><i class="fa-solid fa-bag-shopping"></i> Shop Now</a>
+          <br>
+          <button class="btnnostyle" id="arrowtogodown" type="button" onclick="arrowMove()"><i class="fa-solid fa-arrow-down-long midarrow desktop text-theme animate__animated animate__bounce animate__infinite"></i></button>
+      </div>
+      <!-- MIDDLE CONTENT END -->
+  </div>
+<% } else if(sitestyles.headerchoice == 2) { %>
+    <!-- ANNOUNCEMENT START -->
+    <% if(sitestyles.headerstyle < 4) { %>
+      <% if(sitesettings.notification != 'none') { %>
+        <div class="bg-theme text-center text-black p-2">
+            <p class="notificationtext"><%= sitesettings.notification %></p>
+        </div>
+      <% }; %>
+    <% }; %>
+    <!-- ANNOUNCEMENT END -->
+    <!-- NAVIGATION BAR START -->
+    <nav class="<%= headerStyle %>">
+        <div class="container-fluid">
+          <a class="navbar-brand animate__animated animate__bounceInLeft" href="#"><%= sitesettings.sitename %></a>
+          <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasDarkNav" aria-controls="offcanvasDarkNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+            <div class="navbar-nav animate__animated animate__bounceInRight">
+              <% navbaritems.forEach(function (item) { %>
+                <a class="nav-link" href="<%= item.link %>"><%= item.name %></a>
+              <% }); %>
+              <% if(user != false) { %>
+                <button class="notiicon btnnostyle position-relative me-1 ms-1" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRightNotis" aria-controls="offcanvasRight">
+                  <i class="fa-solid fa-bell"></i>
+                  <% if(typeof user.notifications != 'undefined') { %>
+                    <% if(user.notifications.find(o => o.hasbeenread == false) != undefined) { %>
+                      <span class="position-absolute top-10 start-100 translate-middle p-1 bg-theme border bd-theme rounded-circle"></span>
+                    <% }; %>
+                  <% }; %>
+                </button>
+              <% }; %>
+              <% if(sitestyles.productsearch) { %>
+                <a class="nav-link me-1" href="/search">
+                  <i class="fa-solid fa-magnifying-glass"></i>
+                </a>
+              <% }; %>
+              <button class="carticon btnnostyle me-1" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRightCart" aria-controls="offcanvasRight">
+                <i class="fa-solid fa-cart-shopping"></i>
+              </button>
+              <a class="nav-link me-1" href="/account">
+                <i class="fa-solid fa-user"></i>
+              </a>
+            </div>
+          </div>
+        </div>
+    </nav>
+    
+    <!-- NAVIGATION BAR END -->
+    <!-- ANNOUNCEMENT START -->
+    <% if(sitestyles.headerstyle > 3) { %>
+      <% if(sitesettings.notification != 'none') { %>
+        <br>
+        <br>
+        <br>
+        <div class="bg-theme text-center text-black p-2 mt-3 w-100">
+            <p class="notificationtext"><%= sitesettings.notification %></p>
+        </div>
+        <div class="headerbreak"></div>
+      <% } else { %>
+        <% if(sitestyles.headerstyle != 4) { %>
+          <br>
+          <br>
+          <br>
+        <% }; %>
+      <% }; %>
+    <% }; %>
+    <style>
+      .midtitle {
+        padding-top: 2.2em;
+      }
+    </style>
+    <!-- ANNOUNCEMENT END -->
+<% }; %>
+
+<!-- NOTIFICATION SIDEBAR START -->
+<% if(user != false) { %>
+  <div class="offcanvas offcanvas-end text-bg-dark" tabindex="-1" id="offcanvasRightNotis" aria-labelledby="offcanvasRightLabel">
+    <div class="offcanvas-header">
+      <h5 class="offcanvas-title" id="offcanvasRightLabel">Notifications</h5>
+      <button type="button" class="btnnostyle text-white closebutton" data-bs-dismiss="offcanvas" aria-label="Close">&times;</button>
+    </div>
+    <div class="offcanvas-body text-center">
+      <div class="customDivNotifications">
+        <table class="table text-white">
+          <thead>
+            <tr>
+              <td><p class="text-start" style="font-weight: 700;">Notification</p></td>
+              <td><p class="text-start" style="font-weight: 700;">Created</p></td>
+            </tr>
+          </thead>
+          <tbody>
+            <% if(typeof user.notifications != 'undefined') { %>
+              <% user.notifications.reverse().forEach(function(noti) { %>
+                <% if(noti.hasbeenread) { %>
+                  <tr>
+                <% } else { %>
+                  <tr class="boxshadowlight">
+                <% }; %>
+                    <td><p class="notiparagraph"><a href="/backend/notify/dismiss/<%= noti.uniqueid %>" style="color: white;"><%= noti.content %></a></p></td>
+                    <td><p class="notidate text-theme"><%= noti.datetime %></p></td>
+                  </tr>
+              <% }); %>
+            <% }; %>
+          </tbody>
+      </table>
+      </div>
+      <br>
+      <div class="row justify-content-center notificationbuttons">
+        <div class="mb-1">
+          <hr>
+        </div>
+        <div class="col-lg-6 mt-1">
+          <a href="/backend/notify/deleteall" class="btn btn-outline-theme" style="width: 100%;"><i class="fa-solid fa-trash"></i> Delete All</a>
+        </div>
+        <div class="col-lg-6 mt-1">
+          <a href="/backend/notify/dismissall" class="btn btn-outline-theme" style="width: 100%;"><i class="fa-solid fa-bell-slash"></i> Dismiss All</a>
+        </div>
+      </div>
+    </div>
+  </div>
+<% }; %>
+<!-- NOTIFICATION SIDEBAR END -->
+<!-- CART SIDEBAR START -->
+<div class="offcanvas offcanvas-end text-bg-dark" tabindex="-1" id="offcanvasRightCart" aria-labelledby="offcanvasRightLabel">
+  <div class="offcanvas-header">
+    <h5 class="offcanvas-title" id="offcanvasRightLabel"><a href="/cart"><i class="fa-solid fa-cart-shopping"></i> Shopping Cart</a></h5>
+    <button type="button" class="btnnostyle text-white closebutton" data-bs-dismiss="offcanvas" aria-label="Close">&times;</button>
+  </div>
+  <div class="offcanvas-body">
+    <% if(deCart.length < 1) { %>
+      <p>You have nothing in your cart...</p>
+      <br>
+      <a href="/shop" class="btn bg-theme bd-theme text-white"><i class="fa-solid fa-bag-shopping"></i> Shop Now</a>
+    <% } else { %>
+      <div class="customDiv">
+        <table class="table carttable text-white">
+          <thead>
+            <tr>
+              <th scope="col"><p style="text-decoration: underline;">Product</p></th>
+              <th scope="col"><p style="text-decoration: underline;">Price</p></th>
+            </tr>
+          </thead>
+          <tbody>
+            <% deCart.forEach(function(item) { %>
+              <% totalValue = totalValue + Number(item.price) %>
+              <tr>
+                <td><a href="/backend/findproduct/<%= item.uniqueid %>" class="nohovereffecta">🔗 <%= item.name %></a></td>
+                <td><%= config.paymentSettings.currencySymbol %><%= item.price %> <a class="nohovereffecta text-danger text-end" href="/backend/remove/cart/<%= item.uniqueid %>">&times;</a></td>
+              </tr>
+            <% }); %>
+            <tr>
+              <% if(user.discount != 0 && typeof user.discount != 'undefined') { %>
+                <td><br><p style="font-weight: 700;">Total Amount Due</p><br><p style="font-weight: 700;">Discount <%= user.discount %>%</p></td>
+                <td><br><p style="font-weight: 700;"><%= config.paymentSettings.currencySymbol %><%= totalValue.toFixed(2) %></p><br><p style="font-weight: 700;"><%= config.paymentSettings.currencySymbol %><%= Math.round(100*(totalValue - ((totalValue / 10) * (user.discount * .10))))/100 %></p></td>
+              <% } else { %>
+                <td><br><p style="font-weight: 700;">Total Amount Due</p></td>
+                <td><br><p style="font-weight: 700;"><%= config.paymentSettings.currencySymbol %><%= Math.round(100*totalValue)/100 %></p></td>
+              <% }; %>
+            </tr>
+          </tbody>
+      </table>
+      </div>
+      <form action="/backend/apply/discount" method="post">
+        <% if(user.discount != 0 && typeof user.discount != 'undefined') { %>
+          <p class="text-start text-success" style="margin-top: 0;">Code Applied!</p>
+        <% }; %>
+        <div class="input-group">
+            <input type="text" name="code" class="form-control" placeholder="Discount / Giftcard..." aria-label="Discount / Giftcard..." required>
+            <button class="btn btn-theme" type="submit" id="button-addon2">Apply</button>
+        </div>
+      </form>
+      <hr>
+      <form method="post">
+        <h5 class="offcanvas-title text-start" id="offcanvasRightLabel">Agreement</h5>
+        <br>
+        <p class="text-start"><input class="form-check-input" type="checkbox" value="" aria-label="termsagreement" required> Please confirm that you agree to our <a href="/tos" target="_blank" class="nohovereffecta" style="text-decoration: underline;">Terms of Service</a> and our <a href="/privacy" target="_blank" class="nohovereffecta" style="text-decoration: underline;">Privacy Policy</a>.</p>
+        <hr>
+        <h5 class="offcanvas-title text-start" id="offcanvasRightLabel">Payment Method</h5>
+        <br>
+        <% if(!user || (JSON.parse(user.cart)).length < 1) { %>
+          <% if(config.paymentSettings.useStripe) { %>
+            <button type="submit" disabled formaction="/backend/checkout/stripe" class="btn btn-lg stripepayment paymentbutton"><i class="fa-brands fa-cc-stripe"></i> Checkout with Stripe</button>
+          <% }; %>
+          <% if(config.paymentSettings.usePaypal) { %>
+            <button type="submit" disabled formaction="/backend/checkout/paypal" class="btn btn-lg paypalpayment paymentbutton"><i class="fa-brands fa-cc-paypal"></i> Checkout with PayPal</button>
+          <% }; %>
+        <% } else { %>
+          <% if(config.paymentSettings.useStripe) { %>
+            <button type="submit" formaction="/backend/checkout/stripe" class="btn btn-lg stripepayment paymentbutton"><i class="fa-brands fa-cc-stripe"></i> Checkout with Stripe</button>
+          <% }; %>
+          <% if(config.paymentSettings.usePaypal) { %>
+            <button type="submit" formaction="/backend/checkout/paypal" class="btn btn-lg paypalpayment paymentbutton"><i class="fa-brands fa-cc-paypal"></i> Checkout with PayPal</button>
+          <% }; %>
+        <% }; %>
+      </form>
+      <% }; %>
+    </div>
+</div>
+<!-- CART SIDEBAR END -->
+<!-- NAVIGATION SIDEBAR START -->
+<div class="offcanvas offcanvas-start text-bg-dark" tabindex="-1" id="offcanvasDarkNav" aria-labelledby="offcanvasDarkLabel">
+  <div class="offcanvas-header">
+    <h5 class="offcanvas-title" id="offcanvasDarkLabel"><%= sitesettings.sitename %></h5>
+    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+  </div>
+  <div class="offcanvas-body">
+    <div class="navbar-nav animate__animated animate__bounceInRight">
+      <% navbaritems.forEach(function (item) { %>
+        <a class="nav-link" href="<%= item.link %>"><%= item.name %></a>
+      <% }); %>
+      <br>
+      <div class="d-flex mx-auto">
+        <% if(user != false) { %>
+          <button class="notiicon btnnostyle ms-2 me-2" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRightNotis" aria-controls="offcanvasRight">
+            <i class="fa-solid fa-bell"></i>
+          </button>
+        <% }; %>
+        <% if(sitestyles.productsearch) { %>
+          <a class="nav-link ms-2 me-2" href="/search">
+            <i class="fa-solid fa-magnifying-glass"></i>
+          </a>
+        <% }; %>
+        <button class="carticon btnnostyle ms-2 me-2" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRightCart" aria-controls="offcanvasRight">
+          <i class="fa-solid fa-cart-shopping"></i>
+        </button>
+        <a class="nav-link ms-2 me-2" href="/account">
+          <i class="fa-solid fa-user"></i>
+        </a>
+      </div>
+    </div>
+    <img src="/assets/logo.png" class="mobilenavbarlogo" alt="webstore logo" loading="lazy">
+  </div>
+</div>
+<!-- NAVIGATION SIDEBAR END -->
+<div class="headertocontent"></div>
+<script>
+  const arrowButton = document.getElementById("arrowtogodown");
+  function arrowMove() {
+    arrowButton.scrollIntoView(true, {behavior: "smooth", block: "end", inline: "nearest"});
+  };
+</script>

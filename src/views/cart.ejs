@@ -1,0 +1,109 @@
+<%
+  let deCartPage = [];
+  if(typeof user.cart != 'undefined') {
+    deCartPage = JSON.parse(user.cart);
+  };
+  let totalValuePage = 0;
+%>
+
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Cart - <%= sitesettings.sitename %></title>
+        <meta property="og:title" content="Cart - <%= sitesettings.sitename %>" />
+        <link rel="icon" href="/assets/logo.png">
+        <meta property="og:image" content="/assets/logo.png">
+        <meta name="theme-color" content="<%= sitesettings.sitecolor %>">
+        <meta name="description" content="<%= sitesettings.sitedesc %>" />
+        <meta property="og:type" content="website" />
+        <meta property="og:description" content="<%= sitesettings.sitedesc %>" />
+    </head>
+    <body>
+        <%- include('_header') %>
+        <div class="container">
+            <h1 style="font-weight: 700;">Your Shopping Cart</h1>
+            <br>
+            <div class="container bg-thatdark p-4">
+              <% if(deCartPage.length < 1) { %>
+                <h3><i class="fa-solid fa-face-sad-tear"></i> Uh Oh...</h3>
+                <hr>
+                <p>You have nothing in your cart...</p>
+                <br>
+                <a href="/shop" class="btn bg-theme bd-theme text-white"><i class="fa-solid fa-bag-shopping"></i> Shop Now</a>
+              <% } else { %>
+                <div class="row justify-content-center p-4">
+                  <div class="col-lg-6 mb-3 text-start">
+                    <h2 style="font-weight: 700;">Cart Items</h2>
+                    <hr>
+                      <div class="row justify-content-center cartpagefixedheight">
+                        <% deCartPage.forEach(function(item) { %>
+                          <% totalValuePage = totalValuePage + Number(item.price) %>
+                          <div class="col-12 mb-4 d-flex cartpagebigblock">
+                            <h3 class="cartpageremove" style="opacity: 0.9;"><a href="/backend/remove/cart/<%= item.uniqueid %>">&times;</a></h3>
+                            <img src="/images/product_<%= item.uniqueid %>.png" class="cartpagefeatprod" alt="product feat image">
+                            <h3 class="cartpageitemname"><a href="/backend/findproduct/<%= item.uniqueid %>"><%= item.name %></a> | <span class="text-theme"><%= config.paymentSettings.currencySymbol %><%= item.price %></span></h3>
+                          </div>
+                        <% }); %>
+                      </div>
+                      <div class="row justify-content-center">
+                        <div class="col-12 mb-4">
+                          <form action="/backend/apply/discount" method="post" style="margin-top: 1em;">
+                            <% if(user.discount != 0 && typeof user.discount != 'undefined') { %>
+                              <p class="text-start text-success" style="margin-top: 0;"><%= user.discount %>% Code Applied!</p>
+                            <% }; %>
+                            <% if(user.giftcard != 'none' && typeof user.discount != 'undefined') { %>
+                              <p class="text-start text-success" style="margin-top: 0;">Giftcard Applied, view payment screen to see adjusted price!</p>
+                            <% }; %>
+                            <div class="input-group">
+                                <input type="text" name="code" class="form-control" placeholder="Discount / Giftcard..." aria-label="Discount / Giftcard..." required>
+                                <button class="btn btn-theme cartpageapplydiscountbutton" type="submit" id="button-addon2">Apply</button>
+                            </div>
+                          </form>
+                          <br>
+                          <% if(user.discount != 0 && typeof user.discount != 'undefined') { %>
+                            <h3 style="font-weight: 700; margin-bottom: 0.6em;">Total Amount Due: <span class="text-theme"><%= config.paymentSettings.currencySymbol %><%= totalValuePage.toFixed(2) %></span></h3>
+                            <h3 style="font-weight: 700;">Discounted Amount: <span class="text-theme"><%= config.paymentSettings.currencySymbol %><%= Math.round(100*(totalValuePage - ((totalValuePage / 10) * (user.discount * .10))))/100 %></span></h3>
+                          <% } else { %>
+                            <h3 style="font-weight: 700;">Total Amount Due: <span class="text-theme"><%= config.paymentSettings.currencySymbol %><%= Math.round(100*totalValuePage)/100 %></span></h3>
+                          <% }; %>
+                        </div>
+                      </div>
+                  </div>
+                  <div class="col-lg-6 mb-3">
+                    <h2 style="font-weight: 700;">Checkout Area</h2>
+                    <hr>
+                    <form method="post">
+                      <h4 class="offcanvas-title text-start" style="font-weight: 700;" id="offcanvasRightLabel">Agreement</h4>
+                      <br>
+                      <p class="text-start"><input class="form-check-input bg-theme" type="checkbox" value="" aria-label="termsagreement" required> Please confirm that you agree to our <a href="/tos" target="_blank" class="nohovereffecta" style="text-decoration: underline;">Terms of Service</a> and our <a href="/privacy" target="_blank" class="nohovereffecta" style="text-decoration: underline;">Privacy Policy</a>.</p>
+                      <hr>
+                      <h4 class="offcanvas-title text-start mb-2" style="font-weight: 700;" id="offcanvasRightLabel">Payment Method</h4>
+                      <p class="text-start" style="opacity: 0.9;">Looking for a different way to pay? Feel free to reach out to us and maybe we can help!</p>
+                      <br>
+                      <% if(!user || (JSON.parse(user.cart)).length < 1) { %>
+                        <% if(config.paymentSettings.useStripe) { %>
+                          <button type="submit" disabled formaction="/backend/checkout/stripe" class="btn btn-lg stripepayment paymentbutton"><i class="fa-brands fa-cc-stripe"></i> Stripe Checkout</button>
+                        <% }; %>
+                        <% if(config.paymentSettings.usePaypal) { %>
+                          <button type="submit" disabled formaction="/backend/checkout/paypal" class="btn btn-lg paypalpayment paymentbutton" style="margin-bottom: 0;"><i class="fa-brands fa-cc-paypal"></i> PayPal Checkout</button>
+                        <% }; %>
+                      <% } else { %>
+                        <% if(config.paymentSettings.useStripe) { %>
+                          <button type="submit" formaction="/backend/checkout/stripe" class="btn btn-lg stripepayment paymentbutton"><i class="fa-brands fa-cc-stripe"></i> Stripe Checkout</button>
+                        <% }; %>
+                        <% if(config.paymentSettings.usePaypal) { %>
+                          <button type="submit" formaction="/backend/checkout/paypal" class="btn btn-lg paypalpayment paymentbutton" style="margin-bottom: 0;"><i class="fa-brands fa-cc-paypal"></i> PayPal Checkout</button>
+                        <% }; %>
+                      <% }; %>
+                      <hr>
+                      <a href="/shop" class="btn btn-lg keepshopping btn-theme paymentbutton"><i class="fa-solid fa-bag-shopping"></i> Continue Shopping</a>
+                    </form>
+                  </div>
+                </div>
+              <% }; %>
+            </div>
+        </div>
+        <%- include('_footer') %>
+    </body>
+</html>

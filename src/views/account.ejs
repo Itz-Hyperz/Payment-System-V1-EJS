@@ -1,0 +1,310 @@
+<%
+    function convertInvoiceValue(value) {
+        if(value) {
+            return 'PAID';
+        } else {
+            return 'UNPAID';
+        };
+    };
+    function convertMailValue(value) {
+        if(value) {
+            return 'Joined!';
+        } else {
+            return 'Not Participating...';
+        };
+    };
+    function convertValue(value) {
+        if(value) {
+            return 'Yes';
+        } else {
+            return 'No';
+        };
+    };
+    daUser.mailendpoints = JSON.parse(daUser.mailendpoints);
+%>
+
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Account - <%= sitesettings.sitename %></title>
+        <meta property="og:title" content="Account - <%= sitesettings.sitename %>" />
+        <link rel="icon" href="/assets/logo.png">
+        <meta property="og:image" content="/assets/logo.png">
+        <meta name="theme-color" content="<%= sitesettings.sitecolor %>">
+        <meta name="description" content="<%= sitesettings.sitedesc %>" />
+        <meta property="og:type" content="website" />
+        <meta property="og:description" content="<%= sitesettings.sitedesc %>" />
+    </head>
+    <body>
+        <%- include('_header') %>
+        <div class="container">
+            <h2 style="font-weight: 700;">Account Management</h2>
+            <br>
+            <div class="p-4 bg-thatdark bd-theme boxshadowlol" style="border-radius: 1em;">
+                <% if(myaccount) { %>
+                    <div class="row justify-content-center">
+                        <div class="col-6 text-start">
+                            <button type="button" data-bs-toggle="modal" data-bs-target="#mailSettings" class="btn btn-lg btn-theme mx-auto" style="font-weight: 700;"><i class="fa-regular fa-envelope"></i></button>
+                        </div>
+                        <div class="col-6 text-end">
+                            <a href="/logout" class="btn btn-danger btn-lg" style="font-weight: 700;"><i class="fa-solid fa-right-from-bracket"></i></a>
+                        </div>
+                    </div>
+                <% }; %>
+                <img src="/images/avatar_<%= daUser.userid %>.png" class="reviewlogo bg-theme bd-theme boxshadowlight" alt="user image" loading="lazy">
+                <h2 class="reviewheader"><%= daUser.username %></h2>
+                <% if(staff) { %>
+                    <div class="mx-auto">
+                        <p class="btn btn-lg btn-outline-theme nohoverbuttonchange mx-auto mb-2" style="font-weight: 700;"><i class="fa-solid fa-wifi"></i> IP Address: <span class="filterblurextra"><%= daUser.latestip %></span></p>
+                    </div>
+                <% }; %>
+                <hr>
+                <% if(staff) { %>
+                    <form action="/backend/account/add/product/<%= daUser.userid %>" method="post">
+                        <div class="addproductselectgroup mx-auto">
+                            <div class="input-group mb-3">
+                                <select class="form-select bg-dark" name="product" required>
+                                    <% products.forEach(function(product) { %>
+                                        <option value="<%= product.uniqueid %>"><%= product.name %></option>
+                                    <% }); %>
+                                </select>
+                                <button type="submit" class="btn btn-theme">Add Product</button>
+                            </div>
+                        </div>
+                    </form>
+                <% }; %>
+                <% if(staff || myaccount) { %>
+                    <div class="customDiv">
+                        <h5>Owned Items</h5>
+                        <table class="table table-bordered border-gray text-white">
+                            <thead>
+                            <tr>
+                                <th scope="col"><p style="text-decoration: underline;">Product Name</p></th>
+                                <th scope="col"><p style="text-decoration: underline;">Date Bought</p></th>
+                                <th scope="col"><p style="text-decoration: underline;">Price</p></th>
+                                <th scope="col"><p style="text-decoration: underline;">Download (#)</p></th>
+                                <th scope="col"><p style="text-decoration: underline;">Receipt</p></th>
+                                <th scope="col"><p style="text-decoration: underline;">License</p></th>
+                                <% if(staff) { %>
+                                    <th scope="col" class="text-end"><p style="text-decoration: underline;">Options</p></th>
+                                <% }; %>
+                            </tr>
+                            </thead>
+                            <tbody>
+                                <% ownedItems.forEach(function(item) { %>
+                                    <tr>
+                                        <td><a href="/backend/findproduct/<%= item.productid %>"><%= item.productname %></a></td>
+                                        <td><%= item.datebought %></td>
+                                        <td><%= config.paymentSettings.currencySymbol %><%= item.price %></td>
+                                        <td><a href="/download/product/<%= item.productid %>" class="text-theme">Download</a> (<%= item.downloads %>)</td>
+                                        <td><a href="/receipt/<%= item.receipt %>" class="text-theme">View Receipt</a></td>
+                                        <td><a href="/license/<%= item.uniqueid %>" class="text-theme">View License</a></td>
+                                        <% if(staff) { %>
+                                            <td class="text-end"><a href="/backend/account/delete/product/<%= daUser.userid %>/<%= item.uniqueid %>" class="text-danger">Delete</a></td>
+                                        <% }; %>
+                                    </tr>
+                                <% }); %>
+                            </tbody>
+                        </table>  
+                    </div>
+                    <% if(staff) { %>
+                        <br>
+                        <h4 class="mb-3"><i class="fa-solid fa-shield-halved"></i> Create Custom Upload</h4>
+                        <form action="/backend/create/ownedupload/<%= daUser.userid %>" method="post" enctype="multipart/form-data">
+                            <div class="row justify-content-center">
+                                <div class="col-lg-3 mb-3">
+                                    <input type="text" name="name" class="form-control searchbox" placeholder="File name..." required>
+                                </div>
+                                <div class="col-lg-3 mb-3">
+                                    <input type="text" name="amount" class="form-control searchbox" placeholder="Amount paid... (14.99)" required>
+                                </div>
+                                <div class="col-lg-3 mb-3">
+                                    <input type="file" name="file" class="form-control searchbox" required>
+                                </div>
+                                <div class="col-lg-3 mb-3">
+                                    <button type="submit" class="btn btn-outline-theme w-100"><i class="fa-solid fa-shield-halved"></i> Create Custom Upload</button>
+                                </div>
+                            </div>
+                        </form>
+                    <% }; %>
+                    <br>
+                    <div class="customDiv">
+                        <h5>Custom Uploaded Items</h5>
+                        <table class="table table-bordered border-gray text-white">
+                            <thead>
+                            <tr>
+                                <th scope="col"><p style="text-decoration: underline;">File Name</p></th>
+                                <th scope="col"><p style="text-decoration: underline;">Date/Time</p></th>
+                                <th scope="col"><p style="text-decoration: underline;">Price</p></th>
+                                <th scope="col"><p style="text-decoration: underline;">Download (#)</p></th>
+                                <% if(staff) { %>
+                                    <th scope="col" class="text-end"><p style="text-decoration: underline;">Options</p></th>
+                                <% }; %>
+                            </tr>
+                            </thead>
+                            <tbody>
+                                <% ownedUploads.forEach(function(item) { %>
+                                    <tr>
+                                        <td><%= item.name %></td>
+                                        <td><%= item.datetime %></td>
+                                        <td><%= config.paymentSettings.currencySymbol %><%= item.price %></td>
+                                        <td><a href="/download/upload/<%= item.uniqueid %>" class="text-theme">Download</a> (<%= item.downloads %>)</td>
+                                        <% if(staff) { %>
+                                            <td class="text-end"><a href="/backend/account/delete/upload/<%= daUser.userid %>/<%= item.uniqueid %>" class="text-danger">Delete</a></td>
+                                        <% }; %>
+                                    </tr>
+                                <% }); %>
+                            </tbody>
+                        </table>
+                    </div>
+                    <br>
+                    <div class="customDiv">
+                        <h5>All Invoices</h5>
+                        <table class="table table-bordered border-gray text-white">
+                            <thead>
+                            <tr>
+                                <th scope="col"><p style="text-decoration: underline;">Title</p></th>
+                                <th scope="col"><p style="text-decoration: underline;">Date/Time</p></th>
+                                <th scope="col"><p style="text-decoration: underline;">Price</p></th>
+                                <th scope="col"><p style="text-decoration: underline;">Status</p></th>
+                                <th scope="col" class="text-end"><p style="text-decoration: underline;">Options</p></th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                                <% invoices.forEach(function(invoice) { %>
+                                    <tr>
+                                        <td><%= invoice.title %></td>
+                                        <td><%= invoice.datetime %></td>
+                                        <td><%= config.paymentSettings.currencySymbol %><%= invoice.price %></td>
+                                        <td><%= convertInvoiceValue(invoice.paid) %></td>
+                                        <td class="text-end"><a href="/invoice/<%= invoice.uniqueid %>" class="text-theme">View Invoice</a></td>
+                                    </tr>
+                                <% }); %>
+                            </tbody>
+                        </table>
+                    </div>
+                    <% if(staff) { %>
+                        <br>
+                        <br>
+                        <h4 class="mb-3"><i class="fa-solid fa-gift"></i> Give Gift Cards</h4>
+                        <form action="/backend/add/giftcard/<%= daUser.userid %>" method="post">
+                            <div class="row justify-content-center">
+                                <div class="col-lg-6 mb-3">
+                                    <select class="form-select searchbox" name="giftcard" required>
+                                        <% allGiftCards.sort((a, b) => { return a.pos - b.pos }).forEach(function(item) { %>
+                                            <option value="<%= item.uniqueid %>"><%= item.name %> (<%= config.paymentSettings.currencySymbol %><%= item.amount %>)</option>
+                                        <% }); %>
+                                    </select>
+                                </div>
+                                <div class="col-lg-6 mb-3">
+                                    <button type="submit" class="btn btn-theme w-100"><i class="fa-solid fa-gift"></i> Add Gift Card</button>
+                                </div>
+                            </div>
+                        </form>
+                    <% }; %>
+                    <br>
+                    <div class="customDiv">
+                        <h5>Purchased Gift Cards</h5>
+                        <table class="table table-bordered border-gray text-white">
+                            <thead>
+                            <tr>
+                                <th scope="col"><p style="text-decoration: underline;">Gift Card Code</p></th>
+                                <th scope="col"><p style="text-decoration: underline;">Amount Left</p></th>
+                                <% if(staff) { %>
+                                    <th scope="col" class="text-end"><p style="text-decoration: underline;">Options</p></th>
+                                <% }; %>
+                            </tr>
+                            </thead>
+                            <tbody>
+                                <% giftCards.forEach(function(item) { %>
+                                    <tr>
+                                        <td><p class="censored"><%= item.code %></p></td>
+                                        <td><%= config.paymentSettings.currencySymbol %><%= item.amount %></td>
+                                        <% if(staff) { %>
+                                            <td class="text-end"><a href="/backend/remove/giftcard/<%= daUser.userid %>/<%= item.uniqueid %>" class="text-danger">Delete</a></td>
+                                        <% }; %>
+                                    </tr>
+                                <% }); %>
+                            </tbody>
+                        </table>
+                    </div>
+                <% }; %>
+                <% if(staff) { %>
+                    <hr>
+                    <h5 class="mb-3">Staff Management</h5>
+                    <div class="row justify-content-center">
+                        <div class="col-auto mb-3">
+                            <p><a href="/backend/account/delete/user/<%= daUser.userid %>" class="btn btn-danger"><i class="fa-solid fa-trash"></i> Delete Account</a></p>
+                        </div>
+                        <div class="col-auto mb-3">
+                            <p><a href="/backend/account/toggleban/<%= daUser.userid %>" class="btn btn-warning"><i class="fa-solid fa-gavel"></i> Ban/Unban Account</a></p>
+                        </div>
+                    </div>
+                    <br>
+                    <form method="post" action="/backend/account/update/note/<%= daUser.userid %>">
+                        <div class="mb-3">
+                            <label for="exampleFormControlTextarea1" class="form-label">User Note:</label>
+                            <textarea class="form-control bg-dark text-white bd-theme mb-3" rows="4" name="note" placeholder="A user note goes here..." required><%= daUser.note %></textarea>
+                            <button type="submit" class="btn btn-theme"><i class="fa-solid fa-floppy-disk"></i> Save Changes</button>
+                        </div>
+                    </form>
+                <% }; %>
+            </div>
+        </div>
+        <div class="modal fade" id="mailSettings" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-xl">
+              <div class="modal-content text-bg-dark">
+                <div class="modal-header">
+                  <h1 class="modal-title fs-5" id="exampleModalLabel"><i class="fa-solid fa-envelope"></i> Communication Preferences</h1>
+                  <button type="button" class="btnnostyle closebutton" data-bs-dismiss="modal" aria-label="Close">&times;</button>
+                </div>
+                <form action="/backend/account/update/communications" method="post">
+                  <div class="modal-body">
+                    <div class="row justify-content-center text-start">
+                      <div class="col-lg-12 mb-3">
+                        <label for="title"><i class="fa-solid fa-envelope-circle-check"></i> Join Mailing List?</label>
+                        <select name="mailinglist" class="form-control darkinputcolor" required>
+                            <option value="<%= daUser.mailinglist %>" selected><%= convertMailValue(daUser.mailinglist) %> (current)</option>
+                            <option value="1">Join Mailing List</option>
+                            <option value="0">Don't Participate</option>
+                        </select>
+                      </div>
+                      <hr>
+                      <div class="col-lg-12 mb-3">
+                        <label for="title"><i class="fa-solid fa-bell"></i> Receive Notifications</label>
+                        <select name="notified" class="form-control darkinputcolor" required>
+                            <% if(daUser.mailendpoints.includes('NOTIFICATIONS')) { %>
+                                <option value="1" selected>Yes (current)</option>
+                            <% } else { %>
+                                <option value="0" selected>No (current)</option>
+                            <% }; %>
+                            <option value="1">Yes</option>
+                            <option value="0">No</option>
+                        </select>
+                      </div>
+                      <div class="col-lg-12 mb-3">
+                        <label for="title"><i class="fa-solid fa-shield-halved"></i> Receive Login Alerts</label>
+                        <select name="loginalerts" class="form-control darkinputcolor" required>
+                            <% if(daUser.mailendpoints.includes('LOGIN_SESSION')) { %>
+                                <option value="1" selected>Yes (current)</option>
+                            <% } else { %>
+                                <option value="0" selected>No (current)</option>
+                            <% }; %>
+                            <option value="1">Yes</option>
+                            <option value="0">No</option>
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-theme"><i class="fa-solid fa-floppy-disk"></i> Save Changes</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        <%- include('_footer') %>
+    </body>
+</html>

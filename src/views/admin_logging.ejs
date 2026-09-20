@@ -1,0 +1,51 @@
+<%
+  data.products = data.products.sort((a, b) => {
+    return a.pos - b.pos;
+  });
+%>
+
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Admin - <%= sitesettings.sitename %></title>
+        <meta property="og:title" content="Admin - <%= sitesettings.sitename %>" />
+        <link rel="icon" href="/assets/logo.png">
+        <meta property="og:image" content="/assets/logo.png">
+        <meta name="theme-color" content="<%= sitesettings.sitecolor %>">
+        <meta name="description" content="<%= sitesettings.sitedesc %>" />
+        <meta property="og:type" content="website" />
+        <meta property="og:description" content="<%= sitesettings.sitedesc %>" />
+    </head>
+    <body>
+        <%- include('_header') %>
+        <%- include('_admin_header') %>
+        <div class="container">
+            <h1><code>Logging Manager</code></h1>
+            <br>
+            <h4>Audit Logs</h4>
+            <a href="/backend/delete/auditlogs" class="btn btn-danger" style="margin-bottom: 0.6em;"><i class="fa-solid fa-trash"></i> Format Audit Logs (<%= data.auditlogs.length %>)</a>
+            <div class="customDiv">
+              <table class="table table-bordered border-white text-white">
+                <thead>
+                  <tr>
+                    <th scope="col">Date</th>
+                    <th scope="col">Title</th>
+                    <th scope="col">Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <% data.auditlogs.reverse().forEach(function(log) { %>
+                    <tr>
+                        <td><%- log.datetime %></td>
+                        <td><%- log.title %></td>
+                        <td><%- log.description %></td>
+                    </tr>
+                  <% }); %>
+                </tbody>
+              </table>
+            </div>
+        </div>
+        <%- include('_footer') %>
+    </body>
+</html>
